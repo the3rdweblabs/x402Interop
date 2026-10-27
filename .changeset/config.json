@@ -1,0 +1,21 @@
+{
+  "$schema": "https://unpkg.com/@changesets/config@3.1.1/schema.json",
+  "changelog": "@changesets/cli/changelog",
+  "commit": false,
+  "fixed": [["@x402interop/*"]],
+  "linked": [],
+  "access": "public",
+  "baseBranch": "main",
+  "updateInternalDependencies": "patch",
+  "ignore": [
+    "x402interop_monorepo",
+    "facilitator",
+    "discovery",
+    "mcp",
+    "explorer",
+    "e2e",
+    "buyer-agent-base",
+    "seller-sui",
+    "seller-near"
+  ]
+}
