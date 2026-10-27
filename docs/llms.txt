@@ -27,6 +27,6 @@ copyright: "2026 The3rdWebLabs"
 
 ## Project
 - [Pitch](PITCH.md)
-- [Demo script](DEMO_SCRIPT.md)
+- [Walkthrough](WALKTHROUGH.md)
 - [Roadmap](../ROADMAP.md)
 - [Contributing](../CONTRIBUTING.md)

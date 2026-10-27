@@ -9,7 +9,7 @@ Notes for coding agents working in this repository. Read this before editing.
 
 ## What this is
 
-x402Interop is The3rdWebLabs' interoperability layer for the x402 agent-payment economy. A buyer pays on the chain it already uses, the seller is paid on its own chain, and agents discover services across chains. Cross-chain settlement goes through NEAR Intents (1Click API). The hackathon window is 1–14 November 2026.
+x402Interop is The3rdWebLabs' interoperability layer for the x402 agent-payment economy. A buyer pays on the chain it already uses, the seller is paid on its own chain, and agents discover services across chains. Cross-chain settlement goes through NEAR Intents (1Click API).
 
 This tree is a scaffold. Do not add live chain calls, live 1Click calls, or a float.
 

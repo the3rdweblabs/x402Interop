@@ -26,7 +26,7 @@ app.use(
 
 x402Interop is an open-source interoperability layer for the x402 agent-payment economy. A buyer agent pays on the chain it already uses, the seller is paid on its own chain, and agents discover x402 services across chains. Cross-chain settlement goes through [NEAR Intents](https://docs.near-intents.org) (1Click API).
 
-> **Status: hackathon scaffold.** Types, app shells, and docs are in place. Chain verification, 1Click calls, and discovery crawling are not. API shapes are drafts. Claims that still need measuring are marked **(hypothesis)** in the design notes.
+> **Status: early scaffold.** Types, app shells, and docs are in place. Chain verification, 1Click calls, and discovery crawling are not. API shapes are drafts. Claims that still need measuring are marked **(hypothesis)** in the design notes.
 
 Built by [The3rdWebLabs](https://github.com/the3rdweblabs), a Nigerian open-source Web3 R&D studio. [X](https://x.com/the3rdweblabs) · [LinkedIn](https://linkedin.com/company/the3rdweblabs)
 
@@ -100,6 +100,7 @@ The minimum launch set, if scope must shrink, is **Base, Solana, NEAR, and Sui**
 | [specs/FACILITATOR_API.md](specs/FACILITATOR_API.md) | Endpoint reference                                  |
 | [docs/SELLER_GUIDE.md](docs/SELLER_GUIDE.md)         | Integrating as a seller                             |
 | [docs/AGENT_MCP_GUIDE.md](docs/AGENT_MCP_GUIDE.md)   | Integrating as an agent                             |
+| [docs/WALKTHROUGH.md](docs/WALKTHROUGH.md)           | Product walkthrough of a cross-chain payment        |
 | [docs/SECURITY.md](docs/SECURITY.md)                 | Trust model                                         |
 | [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)             | Running the facilitator                             |
 | [docs/PROJECT_NOTES.md](docs/PROJECT_NOTES.md)       | Research notes                                      |

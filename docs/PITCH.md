@@ -45,17 +45,13 @@ NEAR already lets a seller set a 1Click deposit address as the payment destinati
 - Agent builders who want one payment tool across chains.
 - Chains and ecosystems that want their services reachable by agents everywhere.
 
-## Demo (see DEMO_SCRIPT)
+## Walkthrough
 
-An agent searches for a Sui-hosted service through MCP, pays from Base with no bridge and no Sui wallet, and receives the result with a receipt.
+An agent searches for a Sui-hosted service through MCP, pays from Base with no bridge and no Sui wallet, and receives the result with a receipt. The steps are in [WALKTHROUGH.md](WALKTHROUGH.md).
 
-## Traction and status
+## Status
 
-Design and early build. Measured performance will be published in TEST_REPORT. (Add real traction here only when it exists.)
-
-## Track fit (NEAR hackathon, if applicable)
-
-Autonomous payments, real-world payments, agent economies, and cross-chain apps. Confirm the official track list before submitting.
+Design and early build. Measured performance will be published in TEST_REPORT once the corridors have been run.
 
 ## Team
 

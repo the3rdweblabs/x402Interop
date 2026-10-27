@@ -17,10 +17,9 @@ copyright: "2026 The3rdWebLabs"
 ## 1. How this started
 
 1. Started from the NEAR developer docs (docs.near.org).
-2. Asked about the NEAR hackathon starting November 1.
-3. Asked what is missing from NEAR Intents for the agentic web, with cross-chain support and any emerging tech needed.
-4. Evolved into: an x402 interoperability layer with its own facilitator, per-chain schemes, cross-chain discovery, and a Bitcoin/Lightning payer path.
-5. Renamed to **x402interop** (earlier working name: Interopx402).
+2. Asked what is missing from NEAR Intents for the agentic web, with cross-chain support and any emerging tech needed.
+3. Evolved into: an x402 interoperability layer with its own facilitator, per-chain schemes, cross-chain discovery, and a Bitcoin/Lightning payer path.
+4. Renamed to **x402interop** (earlier working name: Interopx402).
 
 ---
 
@@ -34,15 +33,6 @@ copyright: "2026 The3rdWebLabs"
 - Chain Signatures: one NEAR account can control accounts on other chains.
 - TEE-backed AI agents / private inference (NEAR AI Cloud).
 - Docs publish an `llms.txt` index and a Docs MCP for AI tooling.
-
-### 2.2 NEAR hackathon (secondary — confirm on official channels)
-
-- Dates: November 1–14, 2026. Judging November 16–18. Results by November 18, 23:59 UTC.
-- Prize pool: about $250,000 across 13 tracks (AI agents, autonomous payments, cross-chain apps, DeFi, private AI, autonomous businesses, agent economies, real-world payments, gaming, social finance, and others).
-- Entry: no signup; public repo plus demo.
-- Highlighted tech: NEAR Intents, NEAR AI Cloud.
-- Judges mentioned include Mert Mumtaz (Helius CEO) and teams from a16z, Electric Capital, and Dragonfly.
-- **Action:** confirm the official track list, rules, and submission portal.
 
 ---
 
@@ -335,12 +325,14 @@ Seller API (paid on its own chain)
 
 ---
 
-## 14. Suggested build plan (for a November 1–14 hackathon, if targeted)
+## 14. Suggested build order
 
-1. **Days 1–4:** Base → Sui (and Base → NEAR) over the deposit-address path. Dynamic 402 middleware plus the status tracker. Measure real timings.
-2. **Days 5–8:** Discovery index and MCP tool federating at least two existing catalogs plus our own registry.
-3. **Days 9–11:** Intents-balance path for repeat buyers; tiered delivery modes.
-4. **Days 12–14:** Demo: an agent finds a Sui-hosted service via MCP, pays from Base, and receives the result. Polish docs and the demo video. Stretch: Lightning top-up demo.
+The sequence matches the milestones in [ROADMAP.md](../ROADMAP.md). Order follows dependency, not a calendar.
+
+1. **First corridor:** Base → Sui (and Base → NEAR) over the deposit-address path. Dynamic 402 middleware plus the status tracker. Measure real timings.
+2. **Discovery:** index and MCP tool federating at least two existing catalogs plus our own registry.
+3. **Repeat buyers:** Intents-balance path; tiered delivery modes.
+4. **End-to-end walkthrough:** an agent finds a Sui-hosted service via MCP, pays from Base, and receives the result. Polish the docs. Stretch: Lightning top-up.
 
 Scope rule: one working corridor end to end beats many half-built adapters.
 
@@ -374,6 +366,5 @@ Scope rule: one working corridor end to end beats many half-built adapters.
 - FastNear x402 facilitator and NEAR x402 docs
 - Sui blog on NEAR Intents swaps into Sui
 - SwapKit, Ledger, and Brave integrations of NEAR Intents (for chain coverage context)
-- Third-party news coverage of the NEAR hackathon (to be confirmed with official sources)
 
-_Everything above reflects research as of October 27, 2026. Chain lists, facilitator support, and hackathon details change quickly; re-verify before building or presenting._
+_Everything above reflects research as of October 27, 2026. Chain lists and facilitator support change quickly; re-verify before building or relying on them._
