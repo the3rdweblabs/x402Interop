@@ -11,7 +11,8 @@ export default defineConfig({
       provider: 'v8',
       reporter: ['text', 'json-summary'],
       include: ['src/**/*.ts'],
-      exclude: ['src/cli.ts'],
+      // Vitest 5 treats a pattern with no glob wildcard as a directory.
+      exclude: ['src/**/cli.ts'],
       thresholds: {
         lines: 90,
         functions: 90,
