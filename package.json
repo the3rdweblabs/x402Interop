@@ -29,6 +29,8 @@
     "@changesets/cli": "^2.29.7",
     "@eslint/js": "^9.36.0",
     "@types/node": "^22.18.0",
+    "@typescript/native": "npm:typescript@^7.0.2",
+    "@typescript/typescript6": "^6.0.2",
     "@vitest/coverage-v8": "^5.0.5",
     "eslint": "^9.36.0",
     "eslint-config-prettier": "^10.1.8",
@@ -37,10 +39,10 @@
     "eslint-plugin-prettier": "^5.5.4",
     "eslint-plugin-sonarjs": "^3.0.5",
     "prettier": "3.5.2",
-    "tsup": "^8.5.0",
+    "tsup": "^9.0.0",
     "turbo": "^2.5.6",
-    "typescript": "^5.9.2",
-    "typescript-eslint": "^8.44.0",
+    "typescript": "npm:@typescript/typescript6@^6.0.2",
+    "typescript-eslint": "^8.72.0",
     "vitest": "^5.0.5",
     "zod": "^3.25.76"
   }
