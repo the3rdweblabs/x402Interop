@@ -15,7 +15,7 @@ export const paymentRequirementsSchema = z.object({
   amount: z.string().regex(/^\d+$/),
   payTo: z.string().min(1),
   maxTimeoutSeconds: z.number().int().nonnegative(),
-  extra: z.record(z.unknown()).optional(),
+  extra: z.record(z.string(), z.unknown()).optional(),
 })
 
 export const x402InteropQuoteInfoSchema = z.object({
@@ -24,7 +24,7 @@ export const x402InteropQuoteInfoSchema = z.object({
   originNetwork: z.string().min(1),
   originAsset: z.string().min(1),
   originAmount: z.string().regex(/^\d+$/),
-  expiresAt: z.string().datetime(),
+  expiresAt: z.iso.datetime(),
   timeEstimateSeconds: z.number().int().nonnegative(),
   deliveryMode: deliveryModeSchema,
   refundTo: z.string().min(1),
@@ -32,7 +32,7 @@ export const x402InteropQuoteInfoSchema = z.object({
 
 export const x402InteropExtensionSchema = z.object({
   info: x402InteropQuoteInfoSchema,
-  schema: z.record(z.unknown()),
+  schema: z.record(z.string(), z.unknown()),
 })
 
 export function parsePaymentRequirements(value: unknown): PaymentRequirements {
