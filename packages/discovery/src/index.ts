@@ -38,7 +38,7 @@ export const serviceRecordSchema = z.object({
   health: z.enum(['healthy', 'unhealthy', 'unknown']),
   source: z.string().min(1),
   category: z.string().min(1).optional(),
-  resourceUrl: z.string().url().optional(),
+  resourceUrl: z.url().optional(),
 })
 
 export function parseServiceRecord(value: unknown): ServiceRecord {

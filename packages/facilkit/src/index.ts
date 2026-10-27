@@ -13,13 +13,11 @@ import {
 } from '@x402interop/core'
 import { z } from 'zod'
 
-const paymentPayloadSchema = z
-  .object({
-    x402Version: z.number(),
-    accepted: paymentRequirementsSchema,
-    payload: z.record(z.unknown()),
-  })
-  .passthrough()
+const paymentPayloadSchema = z.looseObject({
+  x402Version: z.number(),
+  accepted: paymentRequirementsSchema,
+  payload: z.record(z.string(), z.unknown()),
+})
 
 /** Body shared by `/verify` and `/settle` in the scaffold. */
 export const facilitatorRequestSchema = z.object({
