@@ -1,0 +1,29 @@
+x402Interop
+Copyright (C) 2026 The3rdWebLabs
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+The x402 protocol field names implemented in packages/core follow the
+public x402 specification v2 published by the x402 Foundation:
+
+  https://github.com/x402-foundation/x402
+
+That specification and the reference TypeScript implementation are
+licensed under the Apache License, Version 2.0. This repository does
+not copy that implementation. If a later change vendors upstream
+source, keep the Apache-2.0 header on those files and record the
+upstream path here.
+
+NEAR Intents and the 1Click API are third-party services. This
+repository does not include their code.

@@ -1,0 +1,32 @@
+<!--
+provenance: "native"
+copyright: "2026 The3rdWebLabs"
+-->
+
+# x402interop
+
+> Open-source cross-chain facilitator, scheme family, and discovery layer for x402. Lets an agent pay on its own chain while the seller is paid on a different chain, using NEAR Intents for settlement. Status: design and early build; API shapes are drafts.
+
+## Overview
+- [README](../README.md): problem, solution, payment paths, starting chains
+- [Architecture](ARCHITECTURE.md): components, flows, delivery modes, latency model
+- [Project notes](PROJECT_NOTES.md): full research and decisions log
+
+## Specs and APIs
+- [Scheme specification](../specs/SCHEME_SPEC.md): x402interop scheme family, payload, verify, settle, refund
+- [Facilitator API](../specs/FACILITATOR_API.md): standard x402 endpoints plus /interop extensions
+
+## Integration guides
+- [Seller guide](SELLER_GUIDE.md)
+- [Agent and MCP guide](AGENT_MCP_GUIDE.md)
+
+## Trust and operations
+- [Security](SECURITY.md)
+- [Deployment](DEPLOYMENT.md)
+- [Test report](TEST_REPORT.md): measurements are pending
+
+## Project
+- [Pitch](PITCH.md)
+- [Demo script](DEMO_SCRIPT.md)
+- [Roadmap](../ROADMAP.md)
+- [Contributing](../CONTRIBUTING.md)
