@@ -1,0 +1,44 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# [native]
+packages:
+  - apps/facilitator
+  - apps/discovery
+  - apps/mcp
+  - apps/explorer
+  - packages/core
+  - packages/intents
+  - packages/schemes
+  - packages/adapters/evm
+  - packages/adapters/svm
+  - packages/adapters/sui
+  - packages/adapters/near
+  - packages/adapters/ton
+  - packages/adapters/tron
+  - packages/adapters/xrpl
+  - packages/adapters/lightning
+  - packages/quote
+  - packages/status
+  - packages/facilkit
+  - packages/discovery
+  - packages/client
+  - packages/express
+  - packages/mandate
+  - examples/buyer-agent-base
+  - examples/seller-sui
+  - examples/seller-near
+  - tests/e2e
+
+# Three days. Newly published versions stay out of the lockfile until then.
+minimumReleaseAge: 4320
+
+catalog:
+  '@types/node': ^22.18.0
+  '@vitest/coverage-v8': ^3.2.4
+  tsup: ^8.5.0
+  typescript: ^5.9.2
+  vitest: ^3.2.4
+  viem: ^2.37.5
+  zod: ^3.25.76
+
+allowBuilds:
+  esbuild: true
