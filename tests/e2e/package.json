@@ -1,7 +1,7 @@
 {
   "name": "e2e",
   "version": "0.0.0",
-  "description": "End-to-end checks against the scaffold facilitator.",
+  "description": "End-to-end checks against the facilitator.",
   "license": "GPL-3.0-or-later",
   "author": "The3rdWebLabs",
   "type": "module",

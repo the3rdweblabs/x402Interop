@@ -1,0 +1,31 @@
+{
+  "name": "indexer",
+  "version": "0.0.0",
+  "description": "Unified indexer combining discovery and explorer services",
+  "license": "GPL-3.0-or-later",
+  "author": "The3rdWebLabs",
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/cjs/index.cjs",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/esm/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/esm/index.d.ts",
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.cjs"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "start": "node dist/esm/cli.js"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "tsup": "catalog:",
+    "typescript": "catalog:"
+  },
+  "private": true
+}

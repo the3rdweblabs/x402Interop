@@ -1,132 +1,50 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (c) 2026 THE3RDWEBLABS (https://github.com/the3rdweblabs)
 // [native]
 
-import { createServer, type IncomingMessage, type Server, type ServerResponse } from 'node:http'
+import { createServer, type IncomingMessage, type ServerResponse } from 'node:http'
 
-import {
-  MemoryDiscoveryIndex,
-  serviceRecordSchema,
-  type SearchQuery,
-  type ServiceRecord,
-} from '@x402interop/discovery'
+const services: any[] = []
 
-export interface HttpResult {
-  status: number
-  body: unknown
-}
-
-export function methodOf(method: string | undefined): string {
-  return method ?? 'GET'
-}
-
-export function urlOf(url: string | undefined): string {
-  return url ?? '/'
-}
-
-export function requestPath(url: string | undefined): string {
-  const raw = url && url.length > 0 ? url : '/'
-  const query = raw.indexOf('?')
-  const path = query === -1 ? raw : raw.slice(0, query)
-  return path.length > 0 ? path : '/'
-}
-
-export function searchQuery(url: string): SearchQuery {
-  const query = url.includes('?') ? url.slice(url.indexOf('?') + 1) : ''
-  const params = new URLSearchParams(query)
-  const limitRaw = params.get('limit')
-  const limit = limitRaw === null ? undefined : Number(limitRaw)
-  const read = (key: string): string | undefined => {
-    const value = params.get(key)
-    return value === null ? undefined : value
-  }
-  return {
-    q: read('q'),
-    network: read('network'),
-    asset: read('asset'),
-    maxPrice: read('maxPrice'),
-    category: read('category'),
-    limit: limit !== undefined && Number.isFinite(limit) ? limit : undefined,
-  }
-}
-
-export function routeDiscovery(
-  method: string,
-  url: string,
-  body: unknown,
-  index: MemoryDiscoveryIndex,
-): HttpResult {
-  const path = requestPath(url)
-  if (method === 'GET' && path === '/health') {
-    return { status: 200, body: { status: 'ok', service: 'discovery' } }
-  }
-  if (method === 'GET' && path === '/interop/discovery/search') {
-    return { status: 200, body: { services: index.search(searchQuery(url)) } }
-  }
-  if (method === 'GET' && path.startsWith('/interop/discovery/')) {
-    const id = decodeURIComponent(path.slice('/interop/discovery/'.length))
-    const service = index.get(id)
-    if (!service) return { status: 404, body: { error: 'not_found', message: 'Unknown service' } }
-    return { status: 200, body: service }
-  }
-  if (method === 'POST' && path === '/interop/discovery/register') {
-    const parsed = serviceRecordSchema.safeParse(body)
-    if (!parsed.success) {
-      return {
-        status: 400,
-        body: { error: 'invalid_request', message: 'Service registration is incomplete' },
-      }
-    }
-    index.register(parsed.data)
-    return { status: 201, body: parsed.data }
-  }
-  return { status: 404, body: { error: 'not_found', message: 'No such route' } }
-}
-
-function readBody(req: IncomingMessage): Promise<string> {
-  return new Promise((resolve) => {
-    const chunks: Buffer[] = []
-    req.on('data', (chunk: Buffer) => {
-      chunks.push(chunk)
-    })
-    req.on('end', () => {
-      resolve(Buffer.concat(chunks).toString('utf8'))
-    })
-  })
-}
-
-function sendJson(res: ServerResponse, status: number, body: unknown): void {
+function json(res: ServerResponse, status: number, body: unknown) {
   res.statusCode = status
   res.setHeader('content-type', 'application/json; charset=utf-8')
   res.end(JSON.stringify(body))
 }
 
-export async function dispatch(
-  req: IncomingMessage,
-  res: ServerResponse,
-  index: MemoryDiscoveryIndex,
-): Promise<void> {
-  const raw = await readBody(req)
-  if (raw !== '') {
-    try {
-      const body: unknown = JSON.parse(raw)
-      const result = routeDiscovery(methodOf(req.method), urlOf(req.url), body, index)
-      sendJson(res, result.status, result.body)
-      return
-    } catch {
-      sendJson(res, 400, { error: 'invalid_json', message: 'Request body is not valid JSON' })
+export function createDiscoveryServer() {
+  return createServer((req, res) => {
+    const url = req.url || '/'
+    if (req.method === 'GET' && url.startsWith('/services')) {
+      const params = new URL(url, 'http://localhost').searchParams
+      const query = params.get('q')?.toLowerCase()
+      let results = services
+      if (query) {
+        results = services.filter(
+          (s) =>
+            s.name?.toLowerCase().includes(query) ||
+            s.description?.toLowerCase().includes(query),
+        )
+      }
+      return json(res, 200, { services: results })
+    }
+    if (req.method === 'POST' && url === '/register') {
+      let body = ''
+      req.on('data', (c) => (body += c))
+      req.on('end', () => {
+        try {
+          const data = JSON.parse(body)
+          services.push({ ...data, registeredAt: new Date().toISOString() })
+          json(res, 201, { ok: true })
+        } catch {
+          json(res, 400, { error: 'invalid_json' })
+        }
+      })
       return
     }
-  }
-  const result = routeDiscovery(methodOf(req.method), urlOf(req.url), undefined, index)
-  sendJson(res, result.status, result.body)
-}
-
-export function createDiscoveryServer(
-  index: MemoryDiscoveryIndex = new MemoryDiscoveryIndex(),
-): Server {
-  return createServer((req, res) => {
-    void dispatch(req, res, index)
+    if (req.method === 'GET' && url === '/health') {
+      return json(res, 200, { status: 'ok', service: 'discovery' })
+    }
+    json(res, 404, { error: 'not_found' })
   })
 }
-
-export type { ServiceRecord }

@@ -1,0 +1,16 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    dependencies:
+      '@x402/core':
+        specifier: workspace:^
+        version: link:../x402-core
+      '@x402interop/core':
+        specifier: workspace:*
+        version: link:../core

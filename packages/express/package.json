@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Seller middleware that answers 402 with an x402interop requirement.",
   "license": "GPL-3.0-or-later",
-  "author": "The3rdWebLabs",
+  "author": "THe3RDWEBLABS",
   "type": "module",
   "sideEffects": false,
   "main": "./dist/cjs/index.cjs",

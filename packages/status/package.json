@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Tracks swap state, receipts, and refunds for one quote.",
   "license": "GPL-3.0-or-later",
-  "author": "The3rdWebLabs",
+  "author": "THE3RDWEBLABS",
   "type": "module",
   "sideEffects": false,
   "main": "./dist/cjs/index.cjs",

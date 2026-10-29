@@ -1,8 +1,8 @@
 <!--
 provenance: "native"
-copyright: "2026 The3rdWebLabs"
+copyright: "2026 THE3RDWEBLABS"
 -->
 
 # @x402interop/xrpl
 
-XRPL buyer adapter stub for the x402interop-xrpl scheme.
+XRPL buyer adapter for the x402interop-xrpl scheme.

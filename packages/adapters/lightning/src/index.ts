@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (c) 2026 THE3RDWEBLABS (https://github.com/the3rdweblabs)
 // [native]
 
 import { createStubAdapter, SCHEME_IDS, type ChainAdapter } from '@x402interop/core'

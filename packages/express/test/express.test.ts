@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (c) 2026 THE3RDWEBLABS (https://github.com/the3rdweblabs)
 // [native]
 
 import { describe, expect, it, vi } from 'vitest'
@@ -83,5 +84,20 @@ describe('x402interop middleware', () => {
     x402interop(options)({ headers: { 'payment-signature': [] } }, res, next)
     expect(res.statusCode).toBe(402)
     expect(next).not.toHaveBeenCalled()
+  })
+
+  it('sets canonical PAYMENT-REQUIRED header', () => {
+    const res = response()
+    const next = vi.fn()
+    x402interop(options)({ headers: {} }, res, next)
+    expect(res.headers['PAYMENT-REQUIRED']).toBeTruthy()
+    expect(res.headers['payment-required']).toBeTruthy()
+  })
+
+  it('reads PAYMENT-SIGNATURE uppercase header', () => {
+    const res = response()
+    const next = vi.fn()
+    x402interop(options)({ headers: { 'PAYMENT-SIGNATURE': 'signed' } }, res, next)
+    expect(next).toHaveBeenCalledOnce()
   })
 })

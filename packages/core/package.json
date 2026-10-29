@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "x402 v2 payment types and the shared chain-adapter interface.",
   "license": "GPL-3.0-or-later",
-  "author": "The3rdWebLabs",
+  "author": "THE3RDWEBLABS",
   "type": "module",
   "sideEffects": false,
   "main": "./dist/cjs/index.cjs",
@@ -29,6 +29,7 @@
     "test": "vitest run --coverage"
   },
   "dependencies": {
+    "@x402/core": "^2.28.0",
     "zod": "catalog:"
   },
   "devDependencies": {

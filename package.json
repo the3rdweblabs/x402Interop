@@ -5,7 +5,7 @@
   "type": "module",
   "description": "Cross-chain payments for the x402 agent economy. Pay on any chain, get paid on any chain. Settled by NEAR Intents.",
   "license": "GPL-3.0-or-later",
-  "author": "The3rdWebLabs",
+  "author": "THE3RDWEBLABS",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/the3rdweblabs/x402Interop.git"

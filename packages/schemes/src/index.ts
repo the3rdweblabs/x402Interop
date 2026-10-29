@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (c) 2026 THE3RDWEBLABS (https://github.com/the3rdweblabs)
 // [native]
 
 import { SCHEME_IDS, type ChainFamily, type SchemeId } from '@x402interop/core'

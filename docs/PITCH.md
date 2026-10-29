@@ -1,6 +1,6 @@
 <!--
 provenance: "native"
-copyright: "2026 The3rdWebLabs"
+copyright: "2026 THE3RDWEBLABS"
 -->
 
 # x402interop: one-page pitch
@@ -55,7 +55,7 @@ Design and early build. Measured performance will be published in TEST_REPORT on
 
 ## Team
 
-The3rdWebLabs: a Nigerian open-source Web3 R&D studio building payment infrastructure and developer tooling, with a payments-first focus across Sui, EVM, and Monad ecosystems. Mission: produce credible, globally competitive Web3 infrastructure visibly from Africa.
+THE3RDWEBLABS: a Nigerian open-source Web3 R&D studio building payment infrastructure and developer tooling, with a payments-first focus across Sui, EVM, and Monad ecosystems. Mission: produce credible, globally competitive Web3 infrastructure visibly from Africa.
 
 ## Ask
 

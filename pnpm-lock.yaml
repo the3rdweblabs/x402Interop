@@ -150,6 +150,9 @@ importers:
 
   apps/facilitator:
     dependencies:
+      '@x402/core':
+        specifier: ^2.28.0
+        version: 2.28.0
       '@x402interop/core':
         specifier: workspace:*
         version: link:../../packages/core
@@ -159,12 +162,24 @@ importers:
       '@x402interop/facilkit':
         specifier: workspace:*
         version: link:../../packages/facilkit
+      '@x402interop/intents':
+        specifier: workspace:*
+        version: link:../../packages/intents
       '@x402interop/lightning':
         specifier: workspace:*
         version: link:../../packages/adapters/lightning
       '@x402interop/near':
         specifier: workspace:*
         version: link:../../packages/adapters/near
+      '@x402interop/quote':
+        specifier: workspace:*
+        version: link:../../packages/quote
+      '@x402interop/schemes':
+        specifier: workspace:*
+        version: link:../../packages/schemes
+      '@x402interop/status':
+        specifier: workspace:*
+        version: link:../../packages/status
       '@x402interop/sui':
         specifier: workspace:*
         version: link:../../packages/adapters/sui
@@ -568,6 +583,9 @@ importers:
 
   packages/core:
     dependencies:
+      '@x402/core':
+        specifier: ^2.28.0
+        version: 2.28.0
       zod:
         specifier: 'catalog:'
         version: 4.6.7
@@ -655,6 +673,30 @@ importers:
       '@x402interop/core':
         specifier: workspace:*
         version: link:../core
+      '@x402interop/evm':
+        specifier: workspace:*
+        version: link:../adapters/evm
+      '@x402interop/lightning':
+        specifier: workspace:*
+        version: link:../adapters/lightning
+      '@x402interop/near':
+        specifier: workspace:*
+        version: link:../adapters/near
+      '@x402interop/sui':
+        specifier: workspace:*
+        version: link:../adapters/sui
+      '@x402interop/svm':
+        specifier: workspace:*
+        version: link:../adapters/svm
+      '@x402interop/ton':
+        specifier: workspace:*
+        version: link:../adapters/ton
+      '@x402interop/tron':
+        specifier: workspace:*
+        version: link:../adapters/tron
+      '@x402interop/xrpl':
+        specifier: workspace:*
+        version: link:../adapters/xrpl
       zod:
         specifier: 'catalog:'
         version: 4.6.7
@@ -1659,6 +1701,9 @@ packages:
 
   '@vitest/spy@5.0.5':
     resolution: {integrity: sha512-lwJRExuH417257Q5wv9QYugN9IMJkoxcrKrYxGPQkBzl7wlNpTUxD/5yNX4ESKVUIShKPgkGchYPFMWOOk0wzw==}
+
+  '@x402/core@2.28.0':
+    resolution: {integrity: sha512-Da/7zKxCKqpBoB4Msc9tFgkAv7tJTD8nG+DSSm+QdXAyJS4PQsmgVSKe17rDJTtlu0pwNbLcOje6MyQ6kaDkig==}
 
   abitype@1.2.3:
     resolution: {integrity: sha512-Ofer5QUnuUdTFsBRwARMoWKOH1ND5ehwYhJ3OJ/BQO+StkwQjHw0XyVh4vDttzHB7QOFhPHa/o413PJ82gU/Tg==}
@@ -3207,6 +3252,9 @@ packages:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
 
+  zod@3.25.76:
+    resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
+
   zod@4.6.7:
     resolution: {integrity: sha512-g8W2D2kU6a8untc053fX1uVBKzM7yqAxW/3zwk83+6RyF2+SKOuV+c0wBDhUwzV1PaGapmZH+rmcUzPf+3CGwg==}
 
@@ -3926,6 +3974,10 @@ snapshots:
       vite: 7.3.7(@types/node@26.6.5)
 
   '@vitest/spy@5.0.5': {}
+
+  '@x402/core@2.28.0':
+    dependencies:
+      zod: 3.25.76
 
   abitype@1.2.3(@typescript/typescript6@6.0.2)(zod@4.6.7):
     optionalDependencies:
@@ -5648,5 +5700,7 @@ snapshots:
   ws@8.21.0: {}
 
   yocto-queue@0.1.0: {}
+
+  zod@3.25.76: {}
 
   zod@4.6.7: {}

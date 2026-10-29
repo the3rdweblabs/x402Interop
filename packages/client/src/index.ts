@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (c) 2026 THE3RDWEBLABS (https://github.com/the3rdweblabs)
 // [native]
 
 import type { PaymentRequirements } from '@x402interop/core'
@@ -6,6 +7,9 @@ import type { PaymentRequirements } from '@x402interop/core'
 import { SWAP_STATES, type SwapState } from './status-view.js'
 
 export { SWAP_STATES, type SwapState }
+export { decodePaymentRequired, enforceHardPriceCap, previewPaymentRequirements } from './preview.js'
+export { buildEvmPaymentPayload, type EvmPaymentParams } from './evm-signer.js'
+export { sendEvmPayment, type SendPaymentParams } from './evm-payment.js'
 
 export interface SearchServicesInput {
   query?: string

@@ -1,15 +1,15 @@
 <!--
 provenance: "native"
-copyright: "2026 The3rdWebLabs"
+copyright: "2026 THE3RDWEBLABS"
 -->
 
 # x402interop scheme specification (DRAFT v0.1)
 
-Status: draft for discussion. Field names are illustrative and must be aligned with the x402 specification version being targeted (check the spec repository for the current payload and header names before implementing).
+Status: draft for discussion. This specification extends the [x402 v2 protocol](https://github.com/x402-foundation/x402) published by the x402 Foundation. It does not redefine the base protocol; it defines an interoperability scheme family and facilitator extensions that operate on top of standard x402 types and transport.
 
 ## 1. Purpose
 
-Define a payment scheme family that lets a buyer on chain A pay a seller on chain B through a facilitator, using NEAR Intents for the cross-chain leg.
+Define a payment scheme family that lets a buyer on chain A pay a seller on chain B through a facilitator, using NEAR Intents for the cross-chain leg. A standard x402 client/server can remain compatible if it follows x402 v2 types and headers.
 
 ## 2. Naming
 
@@ -66,15 +66,23 @@ Notes:
 - Exact-output quoting means the seller receives `amount`; the buyer's `originAmount` includes swap fees and slippage.
 - The 1Click API key must never appear in this object.
 - `refundTo` must be the buyer's address on the origin chain so failed swaps return funds to the buyer.
+- This entry MUST conform to the x402 v2 `PaymentRequirements` shape. Cross-chain context MAY be placed in `extra` and/or in the `x402interop` extension (see the x402 v2 extensions model). Prefer using `extensions.x402interop` for machine-readable quote metadata and keep `extra` minimal for compatibility.
 
 ## 5. Payment payload (client to server)
 
-The payload is the origin-chain family's standard signed authorization, redirected to the deposit address, plus binding fields:
+The payload MUST conform to the x402 v2 `PaymentPayload` shape (`x402Version`, `resource?`, `accepted`, `payload`, `extensions?`). For HTTP transport, the client MUST send it base64-encoded in the `PAYMENT-SIGNATURE` header per the x402 v2 HTTP transport specification.
+
+The scheme-specific `payload` is the origin-chain family's standard signed authorization, redirected to the deposit address, plus binding fields:
 
 ```jsonc
 {
-  "scheme": "x402interop-evm",
-  "network": "sui:mainnet",
+  "x402Version": 2,
+  "resource": { /* as in PaymentRequired */ },
+  "accepted": {
+    "scheme": "x402interop-evm",
+    "network": "sui:mainnet",
+    /* ... full PaymentRequirements ... */
+  },
   "payload": {
     "authorization": {
       /* family-specific signed transfer */
@@ -86,14 +94,15 @@ The payload is the origin-chain family's standard signed authorization, redirect
       "expiresAt": "<same or earlier than requirements>",
     },
   },
+  "extensions": { /* optional, echoed as appropriate */ }
 }
 ```
 
-The binding ties the signature to one quote, one deposit address, one nonce, and an expiry, so the facilitator cannot redirect funds (trust-minimization requirement of x402).
+The binding ties the signature to one quote, one deposit address, one nonce, and an expiry, so the facilitator cannot redirect funds (trust-minimization requirement of x402). The `accepted` field must match the chosen entry from `PaymentRequired.accepts`.
 
 ## 6. Verify
 
-The facilitator MUST check:
+The facilitator MUST follow the x402 v2 facilitator interface (`POST /verify`) with `VerifyRequest` containing `x402Version`, `paymentPayload`, `paymentRequirements`. For `x402interop-*` schemes it MUST additionally check:
 
 1. `scheme` and `network` are supported (`/supported`).
 2. The quote exists, is unexpired, and was minted by this facilitator for this resource.
@@ -104,10 +113,12 @@ The facilitator MUST check:
 
 ## 7. Settle
 
+The facilitator MUST follow the x402 v2 facilitator interface (`POST /settle`) with `SettleRequest` containing `x402Version`, `paymentPayload`, `paymentRequirements`. For `x402interop-*` schemes it MUST additionally:
+
 1. Submit the signed origin-chain transfer (the facilitator pays origin gas; the buyer pays none). **(hypothesis, per-chain)**
 2. Wait for origin confirmation, then (optionally) notify 1Click of the deposit with the transaction hash.
 3. Start status tracking. Emit events: `deposit_seen`, `processing`, `success`, `refunded`, `failed`.
-4. Return a receipt containing quote id, origin tx hash, and (when available) destination tx hash.
+4. Return a receipt containing quote id, origin tx hash, and (when available) destination tx hash. The `SettleResponse` MUST conform to x402 v2. For HTTP transport, settlement results may be communicated via the `PAYMENT-RESPONSE` header as per x402 v2.
 
 Settlement response by delivery mode:
 

@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "description": "Stub MCP server that registers the x402interop agent tools.",
   "license": "GPL-3.0-or-later",
-  "author": "The3rdWebLabs",
+  "author": "THE3RDWEBLABS",
   "type": "module",
   "sideEffects": false,
   "main": "./dist/cjs/index.cjs",

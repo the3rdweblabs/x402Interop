@@ -1,0 +1,68 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    dependencies:
+      '@x402/core':
+        specifier: ^2.28.0
+        version: 2.28.0
+      '@x402interop/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+      '@x402interop/evm':
+        specifier: workspace:*
+        version: link:../../packages/adapters/evm
+      '@x402interop/facilkit':
+        specifier: workspace:*
+        version: link:../../packages/facilkit
+      '@x402interop/lightning':
+        specifier: workspace:*
+        version: link:../../packages/adapters/lightning
+      '@x402interop/near':
+        specifier: workspace:*
+        version: link:../../packages/adapters/near
+      '@x402interop/quote':
+        specifier: workspace:*
+        version: link:../../packages/quote
+      '@x402interop/schemes':
+        specifier: workspace:*
+        version: link:../../packages/schemes
+      '@x402interop/status':
+        specifier: workspace:*
+        version: link:../../packages/status
+      '@x402interop/sui':
+        specifier: workspace:*
+        version: link:../../packages/adapters/sui
+      '@x402interop/svm':
+        specifier: workspace:*
+        version: link:../../packages/adapters/svm
+      '@x402interop/ton':
+        specifier: workspace:*
+        version: link:../../packages/adapters/ton
+      '@x402interop/tron':
+        specifier: workspace:*
+        version: link:../../packages/adapters/tron
+      '@x402interop/xrpl':
+        specifier: workspace:*
+        version: link:../../packages/adapters/xrpl
+
+packages:
+
+  '@x402/core@2.28.0':
+    resolution: {integrity: sha512-Da/7zKxCKqpBoB4Msc9tFgkAv7tJTD8nG+DSSm+QdXAyJS4PQsmgVSKe17rDJTtlu0pwNbLcOje6MyQ6kaDkig==}
+
+  zod@3.25.76:
+    resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
+
+snapshots:
+
+  '@x402/core@2.28.0':
+    dependencies:
+      zod: 3.25.76
+
+  zod@3.25.76: {}

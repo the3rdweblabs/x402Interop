@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "In-memory index of x402 services across chains.",
   "license": "GPL-3.0-or-later",
-  "author": "The3rdWebLabs",
+  "author": "THE3RDWEBLABS",
   "type": "module",
   "sideEffects": false,
   "main": "./dist/cjs/index.cjs",

@@ -1,9 +1,9 @@
 {
   "name": "facilitator",
   "version": "0.0.0",
-  "description": "HTTP facilitator with stub /verify, /settle, and /supported routes.",
+  "description": "HTTP facilitator with /verify, /settle, and /supported routes.",
   "license": "GPL-3.0-or-later",
-  "author": "The3rdWebLabs",
+  "author": "THE3RDWEBLABS",
   "type": "module",
   "sideEffects": false,
   "main": "./dist/cjs/index.cjs",
@@ -30,16 +30,21 @@
     "start": "node dist/esm/cli.js"
   },
   "dependencies": {
+    "@x402/core": "^2.28.0",
     "@x402interop/core": "workspace:*",
-    "@x402interop/facilkit": "workspace:*",
     "@x402interop/evm": "workspace:*",
-    "@x402interop/svm": "workspace:*",
-    "@x402interop/sui": "workspace:*",
+    "@x402interop/facilkit": "workspace:*",
+    "@x402interop/intents": "workspace:*",
+    "@x402interop/lightning": "workspace:*",
     "@x402interop/near": "workspace:*",
+    "@x402interop/quote": "workspace:*",
+    "@x402interop/schemes": "workspace:*",
+    "@x402interop/status": "workspace:*",
+    "@x402interop/sui": "workspace:*",
+    "@x402interop/svm": "workspace:*",
     "@x402interop/ton": "workspace:*",
     "@x402interop/tron": "workspace:*",
-    "@x402interop/xrpl": "workspace:*",
-    "@x402interop/lightning": "workspace:*"
+    "@x402interop/xrpl": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "catalog:",

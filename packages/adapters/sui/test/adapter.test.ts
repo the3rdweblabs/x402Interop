@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (c) 2026 THE3RDWEBLABS (https://github.com/the3rdweblabs)
 // [native]
 
 import { SCHEME_IDS, X402_VERSION, type PaymentRequirements } from '@x402interop/core'
@@ -29,5 +30,17 @@ describe('sui adapter', () => {
     )
     expect(result.isValid).toBe(false)
     expect(result.invalidReason).toBe('not_implemented')
+    const settled = await suiAdapter.settle(
+      { x402Version: X402_VERSION, accepted: requirements, payload: {} },
+      requirements,
+    )
+    expect(settled.success).toBe(false)
+    expect(settled.errorReason).toBe('not_implemented')
+    // scheme mismatch
+    expect((await suiAdapter.verify({ x402Version: X402_VERSION, accepted: { ...requirements, scheme: 'x402interop-evm' }, payload: {} }, requirements)).invalidReason).toBe('scheme_mismatch')
+    expect((await suiAdapter.verify({ x402Version: X402_VERSION, accepted: { ...requirements, scheme: 'x402interop-sui' }, payload: { binding: { depositAddress: 123 } } } as any, requirements)).invalidReason).toBe('invalid_binding')
+    const settledErr = await suiAdapter.settle({ x402Version: X402_VERSION, accepted: { ...requirements, scheme: 'x402interop-evm' }, payload: {} } as any, requirements)
+    expect(settledErr.success).toBe(false)
+    expect(settledErr.errorReason).toBe('scheme_mismatch')
   })
 })

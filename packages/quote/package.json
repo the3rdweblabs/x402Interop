@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Turns a 1Click quote into x402 payment requirements and picks a path.",
   "license": "GPL-3.0-or-later",
-  "author": "The3rdWebLabs",
+  "author": "THE3RDWEBLABS",
   "type": "module",
   "sideEffects": false,
   "main": "./dist/cjs/index.cjs",

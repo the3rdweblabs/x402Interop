@@ -1,6 +1,6 @@
 <!--
 provenance: "native"
-copyright: "2026 The3rdWebLabs"
+copyright: "2026 THE3RDWEBLABS"
 -->
 
 # Agent and MCP guide (DRAFT)

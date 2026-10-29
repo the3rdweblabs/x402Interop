@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (c) 2026 THE3RDWEBLABS
 // [native]
 
 import { X402_VERSION, type SupportedKind } from '@x402interop/core'
@@ -32,6 +33,19 @@ export function supportedKinds(): SupportedKind[] {
         scheme: family.adapter.scheme,
         network,
       })
+    }
+  }
+  return kinds
+}
+
+export function getSupportedKinds(): SupportedKind[] {
+  const kinds = supportedKinds()
+  // Add x402interop schemes for all networks
+  const interopSchemes = ['x402interop-evm', 'x402interop-svm', 'x402interop-sui', 'x402interop-near', 'x402interop-tvm', 'x402interop-tron', 'x402interop-xrpl', 'x402interop-lightning']
+  const networks = ['eip155:8453', 'eip155:1', 'solana:mainnet', 'sui:mainnet', 'near:mainnet']
+  for (const scheme of interopSchemes) {
+    for (const network of networks) {
+      kinds.push({ x402Version: X402_VERSION, scheme, network })
     }
   }
   return kinds

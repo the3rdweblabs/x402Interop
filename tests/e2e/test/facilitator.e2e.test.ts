@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (c) 2026 THE3RDWEBLABS (https://github.com/the3rdweblabs)
 // [native]
 
 import type { Server } from 'node:http'
@@ -29,7 +30,7 @@ describe('facilitator e2e', () => {
     })
   })
 
-  it('exposes health, supported, verify, and settle', async () => {
+  it('exposes health, supported, verify, settle, and interop', async () => {
     expect(FACILITATOR_ROUTES.every((route) => isFacilitatorRoute(route))).toBe(true)
     expect(isFacilitatorRoute('/quote')).toBe(false)
 
@@ -66,5 +67,25 @@ describe('facilitator e2e', () => {
       body: JSON.stringify(payload),
     })
     expect(await settled.json()).toMatchObject({ success: false, transaction: '' })
+
+    const quote = await fetch(`${base}/interop/quote`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        sellerNetwork: 'sui:mainnet',
+        sellerAsset: 'usdc',
+        sellerAddress: 'seller',
+        amount: '50000',
+        buyerNetwork: 'eip155:8453',
+        buyerAsset: 'usdc',
+        buyerAddress: 'buyer',
+        deliveryMode: 'on_deposit',
+      }),
+    })
+    expect(quote.status).toBe(200)
+    const quoteBody = (await quote.json()) as any
+    expect(quoteBody.quoteId).toBeTruthy()
+    const status = await fetch(`${base}/interop/status/${quoteBody.quoteId}`)
+    expect(status.status).toBe(200)
   })
 })

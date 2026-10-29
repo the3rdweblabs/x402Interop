@@ -1,9 +1,9 @@
 <!--
 provenance: "native"
-copyright: "2026 The3rdWebLabs"
+copyright: "2026 THE3RDWEBLABS"
 -->
 
-# x402interop — Project Notes (A to Z)
+# x402interop - Project Notes (A to Z)
 
 **Status:** concept and architecture stage  
 **Date compiled:** October 27, 2026  
@@ -67,7 +67,7 @@ NEAR Intents is an intent-based cross-chain settlement system. The 1Click API wr
 | One integrator's tool description (secondary) | typically 30–60 seconds                                  |
 | Official quickstart                           | allow up to 15 minutes                                   |
 | Bitcoin origin (MPP docs)                     | 45–60 minutes because of on-chain confirmations          |
-| Each quote                                    | returns a `timeEstimate` per route — use this at runtime |
+| Each quote                                    | returns a `timeEstimate` per route - use this at runtime |
 
 **Action:** measure real settlement times for each of our corridors during testing.
 
@@ -109,13 +109,13 @@ Always confirm live with `GET /v0/tokens`.
 | EVM (Base, Arbitrum, Polygon, Monad)    | Live                                         | Coinbase (CDP) facilitator lists Base, Polygon, Arbitrum, Monad, World, Solana (verified)                                                                                                               |
 | X Layer, Avalanche, Sei, SKALE          | Live                                         | PayAI facilitator (verified)                                                                                                                                                                            |
 | Ethereum mainnet                        | Not seen in facilitator lists                | May work via EVM scheme; unconfirmed                                                                                                                                                                    |
-| Robinhood Chain                         | Not seen                                     | Depends on whether the stablecoin supports signed transfer authorizations — **check first**                                                                                                             |
+| Robinhood Chain                         | Not seen                                     | Depends on whether the stablecoin supports signed transfer authorizations - **check first**                                                                                                             |
 | Solana                                  | Live                                         | Official scheme and facilitators                                                                                                                                                                        |
 | TON                                     | Supported per x402 docs                      |                                                                                                                                                                                                         |
 | Stellar, Aptos, Hedera, Keeta, Starknet | Supported per docs / spec list               |                                                                                                                                                                                                         |
 | Sui                                     | Official spec exists (`scheme_exact_sui.md`) | Verified in the spec repo                                                                                                                                                                               |
 | NEAR                                    | Exists                                       | Official repo e2e tests include NEAR; FastNear runs a production facilitator for NEAR mainnet and Base. Payments are USDC `ft_transfer` signed as NEP-366 delegates; native NEAR is not a payment asset |
-| XRP (XRPL)                              | Appears in e2e config (keyless facilitator)  | Spec not read — verify                                                                                                                                                                                  |
+| XRP (XRPL)                              | Appears in e2e config (keyless facilitator)  | Spec not read - verify                                                                                                                                                                                  |
 | Tron                                    | No evidence found                            |                                                                                                                                                                                                         |
 | Bitcoin family                          | No native x402                               | See section 9 (Lightning / L402)                                                                                                                                                                        |
 
@@ -189,7 +189,7 @@ Consequences:
 - The refund address should point to the buyer.
 - Needs testing: that a facilitator-submitted transfer is accepted as a valid deposit, and how amounts/fees behave with `EXACT_OUTPUT`.
 
-### 8.4 Draft shape (illustrative only — align with the x402 v2 spec before building)
+### 8.4 Draft shape (illustrative only - align with the x402 v2 spec before building)
 
 ```jsonc
 // accepts[] entry the seller (or our middleware) adds
@@ -219,7 +219,7 @@ Verify = check the signed payment targets the quoted deposit address, amount, an
 - On-chain BTC is far too slow for HTTP (45–60 minutes through Intents), hence Lightning.
 - We found **no evidence that Intents supports Lightning directly**; only on-chain Bitcoin. So Lightning is **our own leg**, not an Intents feature. L402 is the Lightning-native HTTP-402 standard and a useful reference for the invoice and proof flow.
 - Intents is only needed for rebalancing on-chain BTC → stablecoin in the background.
-- **Chosen approach (no float):** Lightning **top-up** — the invoice settles in seconds, the swap runs in the background, and the credit becomes spendable once the swap lands. After that, per-request payments from the credit are instant.
+- **Chosen approach (no float):** Lightning **top-up** - the invoice settles in seconds, the swap runs in the background, and the credit becomes spendable once the swap lands. After that, per-request payments from the credit are instant.
 - Instant, no-float, pay-per-request in BTC from a cold start is not possible: someone must take the BTC-to-stablecoin timing risk.
 
 ---
@@ -232,17 +232,17 @@ Principle: **keep the cross-chain swap off the critical path of the HTTP request
 
 | Option                               | Idea                                                                                           | Outcome                                                                                         |
 | ------------------------------------ | ---------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| Float                                | Facilitator pays the seller instantly from its own liquidity, rebalances later through Intents | **Rejected** — we do not want to carry or present float risk                                    |
-| Pre-positioning                      | Buyer keeps funds on each chain where it will pay                                              | **Rejected** — brings back multi-wallet management, which is exactly what Intents should remove |
+| Float                                | Facilitator pays the seller instantly from its own liquidity, rebalances later through Intents | **Rejected** - we do not want to carry or present float risk                                    |
+| Pre-positioning                      | Buyer keeps funds on each chain where it will pay                                              | **Rejected** - brings back multi-wallet management, which is exactly what Intents should remove |
 | Deposit address with tiered delivery | Per-quote deposit address; seller chooses when to serve                                        | **Adopted (default)**                                                                           |
 | Intents balance                      | Buyer deposits once into an Intents balance and pays from it                                   | **Adopted (repeat buyers)**                                                                     |
 | Lightning top-up                     | BTC arrives fast, swap in background                                                           | **Adopted (Bitcoin payers)**                                                                    |
 
 ### 10.2 Tiered delivery (seller's choice)
 
-1. **Serve on deposit confirmed** — good for cheap calls. Origin leg confirms in seconds on fast chains. If the swap later fails, it refunds the buyer; the seller's exposure is bounded by price.
-2. **Serve on swap success** — for more expensive calls. Return a pending response (HTTP 202-style) and push the result by webhook, SSE, or polling when the swap succeeds. Agents handle async well.
-3. **Fallback** — if the buyer has no funded path, return a normal 402 with top-up instructions.
+1. **Serve on deposit confirmed** - good for cheap calls. Origin leg confirms in seconds on fast chains. If the swap later fails, it refunds the buyer; the seller's exposure is bounded by price.
+2. **Serve on swap success** - for more expensive calls. Return a pending response (HTTP 202-style) and push the result by webhook, SSE, or polling when the swap succeeds. Agents handle async well.
+3. **Fallback** - if the buyer has no funded path, return a normal 402 with top-up instructions.
 
 ### 10.3 Guardrails
 

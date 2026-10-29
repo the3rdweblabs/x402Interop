@@ -1,0 +1,19 @@
+{
+  "quotes": {
+    "mock-3078316337383334": {
+      "quoteId": "mock-3078316337383334",
+      "depositAddress": "0x1c78343032696e7465726f702d6d6f636b3a7573",
+      "originNetwork": "eip155:8453",
+      "originAsset": "usdc",
+      "originAmount": "50000",
+      "expiresAt": "2026-10-28T19:58:24.463Z",
+      "timeEstimateSeconds": 45,
+      "deliveryMode": "on_deposit",
+      "refundTo": "buyer"
+    }
+  },
+  "nonces": [],
+  "deposits": {
+    "mock-3078316337383334": "0x1c78343032696e7465726f702d6d6f636b3a7573"
+  }
+}

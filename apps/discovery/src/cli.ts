@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // [native]
 
-import { createDiscoveryServer } from './index.js'
+import { createDiscoveryServer } from './server.js'
 
-const port = Number(process.env.DISCOVERY_PORT ?? 4021)
+const port = Number(process.env.PORT) || 8081
 const server = createDiscoveryServer()
 server.listen(port, () => {
-  process.stdout.write(`discovery listening on ${port}\n`)
+  console.log(`Discovery listening on http://localhost:${port}`)
 })

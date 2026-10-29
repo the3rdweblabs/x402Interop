@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (c) 2026 THE3RDWEBLABS (https://github.com/the3rdweblabs)
 // [native]
 
 import {
@@ -99,5 +100,39 @@ describe('facilkit', () => {
       transaction: '',
     })
     expect(settlePayment(request() as SettleRequest, now).errorReason).toBe('not_implemented')
+  })
+
+  it('validates x402interop bindings when present', () => {
+    const req = request()
+    // missing binding
+    expect(verifyPayment({ ...req, paymentPayload: { ...req.paymentPayload, payload: { binding: {} } } }, now).invalidReason).toBe('invalid_binding')
+    const validBinding = {
+      quoteId: 'q1',
+      depositAddress: '0xabc',
+      nonce: 'n1',
+      expiresAt: '2026-10-27T12:04:00Z',
+    }
+    req.paymentRequirements.extra = { quoteId: 'q1', depositAddress: '0xabc', expiresAt: '2026-10-27T12:05:00Z' }
+    const okReq = {
+      ...req,
+      paymentPayload: { ...req.paymentPayload, payload: { binding: validBinding } },
+    }
+    expect(verifyPayment(okReq, now).invalidReason).toBe('not_implemented')
+    // binding.quoteId mismatch
+    expect(verifyPayment({ ...okReq, paymentPayload: { ...okReq.paymentPayload, payload: { binding: { ...validBinding, quoteId: 'bad' } } } }, now).invalidReason).toBe('amount_mismatch')
+    // binding.depositAddress mismatch
+    expect(verifyPayment({ ...okReq, paymentPayload: { ...okReq.paymentPayload, payload: { binding: { ...validBinding, depositAddress: '0xbad' } } } }, now).invalidReason).toBe('amount_mismatch')
+    // binding.expiresAt too late
+    expect(verifyPayment({ ...okReq, paymentPayload: { ...okReq.paymentPayload, payload: { binding: { ...validBinding, expiresAt: '2026-10-27T12:10:00Z' } } } }, now).invalidReason).toBe('quote_expired')
+    // binding at top level
+    expect(verifyPayment({ ...okReq, paymentPayload: { ...okReq.paymentPayload, payload: {}, binding: validBinding } as any }, now).invalidReason).toBe('not_implemented')
+    // nonce missing
+    expect(verifyPayment({ ...okReq, paymentPayload: { ...okReq.paymentPayload, payload: { binding: { ...validBinding, nonce: '' } } } }, now).invalidReason).toBe('nonce_reused')
+    // quoteId missing
+    expect(verifyPayment({ ...okReq, paymentPayload: { ...okReq.paymentPayload, payload: { binding: { ...validBinding, quoteId: '' } } } }, now).invalidReason).toBe('invalid_binding')
+    // depositAddress missing
+    expect(verifyPayment({ ...okReq, paymentPayload: { ...okReq.paymentPayload, payload: { binding: { ...validBinding, depositAddress: '' } } } }, now).invalidReason).toBe('invalid_binding')
+    // expiresAt missing
+    expect(verifyPayment({ ...okReq, paymentPayload: { ...okReq.paymentPayload, payload: { binding: { ...validBinding, expiresAt: '' } } } }, now).invalidReason).toBe('quote_expired')
   })
 })

@@ -1,6 +1,6 @@
 <!--
 provenance: "native"
-copyright: "2026 The3rdWebLabs"
+copyright: "2026 THE3RDWEBLABS"
 -->
 
 # Security and trust model (DRAFT)

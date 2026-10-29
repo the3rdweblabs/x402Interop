@@ -1,9 +1,9 @@
 {
   "name": "@x402interop/lightning",
   "version": "1.0.0",
-  "description": "Lightning top-up adapter stub for Bitcoin payers.",
+  "description": "Lightning top-up adapter for Bitcoin payers.",
   "license": "GPL-3.0-or-later",
-  "author": "The3rdWebLabs",
+  "author": "THE3RDWEBLABS",
   "type": "module",
   "sideEffects": false,
   "main": "./dist/cjs/index.cjs",

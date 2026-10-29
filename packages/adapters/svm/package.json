@@ -1,9 +1,9 @@
 {
   "name": "@x402interop/svm",
   "version": "1.0.0",
-  "description": "Solana buyer adapter stub for the x402interop-svm scheme.",
+  "description": "Solana buyer adapter for the x402interop-svm scheme.",
   "license": "GPL-3.0-or-later",
-  "author": "The3rdWebLabs",
+  "author": "THE3RDWEBLABS",
   "type": "module",
   "sideEffects": false,
   "main": "./dist/cjs/index.cjs",

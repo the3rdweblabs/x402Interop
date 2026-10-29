@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (c) 2026 THE3RDWEBLABS (https://github.com/the3rdweblabs)
 // [native]
 
 import { z } from 'zod'
@@ -89,7 +90,7 @@ export class OneClickNotImplementedError extends Error {
  * JWT cannot leak and tests stay offline.
  */
 export class ScaffoldOneClickClient implements OneClickClient {
-  constructor(readonly baseUrl: string) {}
+  constructor(readonly baseUrl: string = 'https://1click.chaindefuser.com') {}
 
   quote(_request: OneClickQuoteRequest): Promise<OneClickQuote> {
     return Promise.reject(new OneClickNotImplementedError('quote', 'POST /v0/quote'))
@@ -103,6 +104,61 @@ export class ScaffoldOneClickClient implements OneClickClient {
     return Promise.reject(
       new OneClickNotImplementedError('submitDeposit', 'POST /v0/deposit/submit'),
     )
+  }
+}
+
+/**
+ * In-memory mock client for tests and local development. Produces deterministic
+ * single-use deposit addresses and statuses without any network calls.
+ */
+export class MockOneClickClient implements OneClickClient {
+  private readonly quotes = new Map<string, OneClickQuote>()
+  private readonly statuses = new Map<string, OneClickSwapStatus>()
+
+  constructor(private readonly seed: string = 'x402interop-mock') {}
+
+  private depositAddressFor(request: OneClickQuoteRequest): string {
+    const payload = `${this.seed}:${request.originAsset}:${request.destinationAsset}:${request.amount}:${request.recipient}:${request.refundTo}`
+    const hex = Buffer.from(payload).toString('hex')
+    return `0x1c${hex.slice(0, 38)}`
+  }
+
+  async quote(request: OneClickQuoteRequest): Promise<OneClickQuote> {
+    const depositAddress = this.depositAddressFor(request)
+    const quote: OneClickQuote = {
+      quoteId: `mock-${Buffer.from(depositAddress).toString('hex').slice(0, 16)}`,
+      depositAddress,
+      originAmount: request.amount,
+      destinationAmount: request.amount,
+      timeEstimateSeconds: 45,
+      expiresAt: new Date(Date.now() + 300000).toISOString(),
+    }
+    this.quotes.set(depositAddress, quote)
+    this.statuses.set(depositAddress, 'PENDING_DEPOSIT')
+    return quote
+  }
+
+  async status(depositAddress: string): Promise<OneClickStatus> {
+    const quote = this.quotes.get(depositAddress)
+    const state = this.statuses.get(depositAddress) ?? 'PENDING_DEPOSIT'
+    return {
+      status: state,
+      depositAddress,
+      originTxHash: state !== 'PENDING_DEPOSIT' ? '0xmockorigin' : undefined,
+      destinationTxHash: state === 'SUCCESS' ? '0xmockdest' : undefined,
+    }
+  }
+
+  async submitDeposit(submission: OneClickDepositSubmission): Promise<OneClickDepositAck> {
+    if (this.quotes.has(submission.depositAddress)) {
+      this.statuses.set(submission.depositAddress, 'KNOWN_DEPOSIT_TX')
+      return { accepted: true }
+    }
+    return { accepted: false }
+  }
+
+  setStatus(depositAddress: string, status: OneClickSwapStatus): void {
+    this.statuses.set(depositAddress, status)
   }
 }
 
@@ -122,3 +178,11 @@ export const oneClickQuoteRequestSchema = z.object({
 export function parseOneClickQuoteRequest(value: unknown): OneClickQuoteRequest {
   return oneClickQuoteRequestSchema.parse(value)
 }
+
+export {
+  createOneClickClient,
+  type CreateOneClickClientOptions,
+  type OneClickClientType,
+} from './factory.js'
+export { HttpOneClickClient } from './http-client.js'
+export { fetchTokens, mapChainToBlockchain, resolveAssetId } from './asset-mapping.js'

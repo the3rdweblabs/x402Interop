@@ -1,6 +1,6 @@
 <!--
 provenance: "native"
-copyright: "2026 The3rdWebLabs"
+copyright: "2026 THE3RDWEBLABS"
 -->
 
 # AGENTS.md
@@ -9,7 +9,7 @@ Notes for coding agents working in this repository. Read this before editing.
 
 ## What this is
 
-x402Interop is The3rdWebLabs' interoperability layer for the x402 agent-payment economy. A buyer pays on the chain it already uses, the seller is paid on its own chain, and agents discover services across chains. Cross-chain settlement goes through NEAR Intents (1Click API).
+x402Interop is THE3RDWEBLABS' interoperability layer for the x402 agent-payment economy. A buyer pays on the chain it already uses, the seller is paid on its own chain, and agents discover services across chains. Cross-chain settlement goes through NEAR Intents (1Click API).
 
 This tree is a scaffold. Do not add live chain calls, live 1Click calls, or a float.
 
@@ -21,6 +21,7 @@ Every source file starts with:
 
 ```
 // SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (c) 2026 THE3RDWEBLABS (https://github.com/the3rdweblabs)
 // [native]
 ```
 

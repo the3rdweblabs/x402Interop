@@ -1,30 +1,30 @@
 <!--
 provenance: "native"
-copyright: "2026 The3rdWebLabs"
+copyright: "2026 THE3RDWEBLABS"
 -->
 
 # Facilitator API reference (DRAFT)
 
 Base URL: `https://<your-facilitator>`
 
-The first three endpoints follow the standard x402 facilitator surface. Check the x402 specification version you target for exact request and response shapes. Endpoints under `/interop` are x402interop extensions and are drafts.
+This facilitator implements the standard x402 v2 facilitator surface (`/supported`, `/verify`, `/settle`) per the x402 Foundation specification, with additional x402interop extensions under `/interop/*`. Endpoints under `/interop` are x402interop extensions and are drafts.
 
-## Standard x402 endpoints
+## Standard x402 endpoints (conform to x402 v2)
 
 ### GET /supported
 
-Lists supported scheme and network pairs, including pass-through schemes and the `x402interop-*` family.
+Lists supported scheme and network pairs, including pass-through schemes and the `x402interop-*` family. Response shape MUST follow x402 v2 `SupportedResponse`.
 
 ### POST /verify
 
-Verifies a payment payload against payment requirements.
+Verifies a payment payload against payment requirements. Request/response MUST follow x402 v2 `VerifyRequest`/`VerifyResponse`.
 
 - For existing schemes: forwarded to the relevant chain facilitator.
 - For `x402interop-*`: runs the checks in SCHEME_SPEC section 6.
 
 ### POST /settle
 
-Settles a verified payment.
+Settles a verified payment. Request/response MUST follow x402 v2 `SettleRequest`/`SettleResponse`.
 
 - For `x402interop-*`: submits the origin transfer, starts tracking, returns a receipt shaped by `deliveryMode`.
 

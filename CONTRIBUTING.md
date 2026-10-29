@@ -1,6 +1,6 @@
 <!--
 provenance: "native"
-copyright: "2026 The3rdWebLabs"
+copyright: "2026 THE3RDWEBLABS"
 -->
 
 # Contributing to x402Interop
@@ -50,5 +50,5 @@ TypeScript is the language for SDKs, the facilitator, and middleware.
 
 ## Community
 
-- GitHub: https://github.com/the3rdweblabs
+- Telegram: https://t.me/the3rdweblabs
 - X: https://x.com/the3rdweblabs

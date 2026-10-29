@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Shared verify, settle, and supported helpers for a facilitator.",
   "license": "GPL-3.0-or-later",
-  "author": "The3rdWebLabs",
+  "author": "THE3RDWEBLABS",
   "type": "module",
   "sideEffects": false,
   "main": "./dist/cjs/index.cjs",
@@ -30,6 +30,14 @@
   },
   "dependencies": {
     "@x402interop/core": "workspace:*",
+    "@x402interop/evm": "workspace:*",
+    "@x402interop/lightning": "workspace:*",
+    "@x402interop/near": "workspace:*",
+    "@x402interop/sui": "workspace:*",
+    "@x402interop/svm": "workspace:*",
+    "@x402interop/ton": "workspace:*",
+    "@x402interop/tron": "workspace:*",
+    "@x402interop/xrpl": "workspace:*",
     "zod": "catalog:"
   },
   "devDependencies": {

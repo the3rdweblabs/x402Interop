@@ -1,9 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (c) 2026 THE3RDWEBLABS (https://github.com/the3rdweblabs)
 // [native]
 
 import { describe, expect, it } from 'vitest'
 
 import {
+  MockOneClickClient,
   OneClickNotImplementedError,
   parseOneClickQuoteRequest,
   ScaffoldOneClickClient,
@@ -38,5 +40,24 @@ describe('ScaffoldOneClickClient', () => {
   it('parses a quote request and rejects a non-atomic amount', () => {
     expect(parseOneClickQuoteRequest(request).swapType).toBe('EXACT_OUTPUT')
     expect(() => parseOneClickQuoteRequest({ ...request, amount: '0.05' })).toThrow()
+  })
+})
+
+describe('MockOneClickClient', () => {
+  it('quotes, tracks status, and accepts deposits', async () => {
+    const client = new MockOneClickClient()
+    const quote = await client.quote(request)
+    expect(quote.quoteId).toBeTruthy()
+    expect(quote.depositAddress).toBeTruthy()
+    const status = await client.status(quote.depositAddress)
+    expect(status.status).toBe('PENDING_DEPOSIT')
+    const ack = await client.submitDeposit({ depositAddress: quote.depositAddress, txHash: '0xabc' })
+    expect(ack.accepted).toBe(true)
+    const ack2 = await client.submitDeposit({ depositAddress: 'missing', txHash: '0xabc' })
+    expect(ack2.accepted).toBe(false)
+    client.setStatus(quote.depositAddress, 'SUCCESS')
+    const success = await client.status(quote.depositAddress)
+    expect(success.status).toBe('SUCCESS')
+    expect(success.destinationTxHash).toBe('0xmockdest')
   })
 })

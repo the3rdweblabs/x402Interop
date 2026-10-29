@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (c) 2026 THE3RDWEBLABS (https://github.com/the3rdweblabs)
 // [native]
 
 import { SCHEME_IDS, X402_VERSION, type PaymentRequirements } from '@x402interop/core'
@@ -29,5 +30,12 @@ describe('near adapter', () => {
     )
     expect(result.isValid).toBe(false)
     expect(result.invalidReason).toBe('not_implemented')
+    const settled = await nearAdapter.settle(
+      { x402Version: X402_VERSION, accepted: requirements, payload: {} },
+      requirements,
+    )
+    expect(settled.success).toBe(false)
+    expect((await nearAdapter.verify({ x402Version: X402_VERSION, accepted: { ...requirements, scheme: 'x402interop-evm' } as any, payload: {} }, requirements)).invalidReason).toBe('scheme_mismatch')
+    expect((await nearAdapter.verify({ x402Version: X402_VERSION, accepted: requirements, payload: { binding: { depositAddress: 1 } } as any }, requirements)).invalidReason).toBe('invalid_binding')
   })
 })

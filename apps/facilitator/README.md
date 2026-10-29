@@ -5,4 +5,4 @@ copyright: "2026 The3rdWebLabs"
 
 # facilitator
 
-HTTP facilitator with stub /verify, /settle, and /supported routes.
+HTTP facilitator with `/health`, `/supported`, `/verify`, `/settle`, `/interop/quote`, and `/interop/status/:quoteId` routes. Cross-chain settlement via NEAR Intents (scaffold).
