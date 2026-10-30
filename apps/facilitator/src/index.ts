@@ -10,3 +10,4 @@ export {
   routeFacilitator,
 } from './server.js'
 export { supportedKinds } from './supported.js'
+export * from './mcp.js'

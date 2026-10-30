@@ -59,8 +59,15 @@ export async function routeFacilitator(
   if (method === 'GET' && path === '/health') {
     return { status: 200, body: { status: 'ok', service: 'facilitator' } }
   }
+  if (method === 'GET' && (path === '/mcp' || path === '/mcp/tools' || path === '/.well-known/mcp')) {
+    return { status: 200, body: { jsonrpc: '2.0', result: { tools: listTools() }, serverInfo: { name: 'x402interop-facilitator-mcp', version: '0.0.0' } } }
+  }
+  if (method === 'POST' && (path === '/mcp' || path === '/mcp/rpc')) {
+    const bodyStr = typeof body === 'string' ? body : JSON.stringify(body)
+    return handleMcpRequest(bodyStr)
+  }
   if (method === 'GET' && path === '/supported') {
-    return { status: 200, body: supportedResponse(supportedKinds()) }
+    return { status: 200, body: supportedResponse(getSupportedKinds ? getSupportedKinds() : supportedKinds()) }
   }
   if (method === 'POST' && path === '/interop/quote') {
     const parsed = parseQuoteRequest(body)
@@ -273,4 +280,18 @@ export function createFacilitatorServer(): Server {
   return createServer((req, res) => {
     void dispatch(req, res)
   })
+}
+
+
+// MCP routes
+import { handleMcp, listTools } from './mcp.js'
+
+export async function handleMcpRequest(body: string): Promise<HttpResult> {
+  try {
+    const message = JSON.parse(body)
+    const response = handleMcp(message)
+    return { status: 200, body: response }
+  } catch {
+    return { status: 400, body: { jsonrpc: '2.0', id: null, error: { code: -32700, message: 'Parse error' } } }
+  }
 }

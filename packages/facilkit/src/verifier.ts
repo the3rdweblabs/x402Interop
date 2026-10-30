@@ -4,14 +4,14 @@
 
 import type { PaymentPayload, PaymentRequirements, VerifyResponse } from '@x402interop/core'
 import { isInteropScheme } from '@x402interop/core'
-import { evmAdapter } from '@x402interop/evm'
-import { svmAdapter } from '@x402interop/svm'
-import { suiAdapter } from '@x402interop/sui'
-import { nearAdapter } from '@x402interop/near'
-import { tonAdapter } from '@x402interop/ton'
-import { tronAdapter } from '@x402interop/tron'
-import { xrplAdapter } from '@x402interop/xrpl'
-import { lightningAdapter } from '@x402interop/lightning'
+import { evmAdapter } from '@x402interop/adpt/evm'
+import { svmAdapter } from '@x402interop/adpt/svm'
+import { suiAdapter } from '@x402interop/adpt/sui'
+import { nearAdapter } from '@x402interop/adpt/near'
+import { tonAdapter } from '@x402interop/adpt/ton'
+import { tronAdapter } from '@x402interop/adpt/tron'
+import { xrplAdapter } from '@x402interop/adpt/xrpl'
+import { lightningAdapter } from '@x402interop/adpt/lightning'
 
 const adapters: Record<string, any> = {
   'x402interop-evm': evmAdapter,

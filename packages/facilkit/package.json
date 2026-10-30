@@ -30,15 +30,8 @@
   },
   "dependencies": {
     "@x402interop/core": "workspace:*",
-    "@x402interop/evm": "workspace:*",
-    "@x402interop/lightning": "workspace:*",
-    "@x402interop/near": "workspace:*",
-    "@x402interop/sui": "workspace:*",
-    "@x402interop/svm": "workspace:*",
-    "@x402interop/ton": "workspace:*",
-    "@x402interop/tron": "workspace:*",
-    "@x402interop/xrpl": "workspace:*",
-    "zod": "catalog:"
+    "zod": "catalog:",
+    "@x402interop/adpt": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "catalog:",

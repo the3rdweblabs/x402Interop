@@ -1,7 +1,7 @@
 {
   "name": "discovery",
   "version": "0.0.0",
-  "description": "HTTP discovery index with search, fetch, and register stubs.",
+  "description": "Unified discovery and explorer for x402interop services.",
   "license": "GPL-3.0-or-later",
   "author": "The3rdWebLabs",
   "type": "module",
@@ -29,9 +29,7 @@
     "test": "vitest run --coverage",
     "start": "node dist/esm/cli.js"
   },
-  "dependencies": {
-    "@x402interop/discovery": "workspace:*"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@types/node": "catalog:",
     "@typescript/native": "catalog:",

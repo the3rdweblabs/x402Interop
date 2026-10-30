@@ -6,7 +6,7 @@
       "originNetwork": "eip155:8453",
       "originAsset": "usdc",
       "originAmount": "50000",
-      "expiresAt": "2026-10-28T19:58:24.463Z",
+      "expiresAt": "2026-10-30T12:23:29.474Z",
       "timeEstimateSeconds": 45,
       "deliveryMode": "on_deposit",
       "refundTo": "buyer"

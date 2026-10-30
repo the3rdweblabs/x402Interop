@@ -4,19 +4,10 @@
 packages:
   - apps/facilitator
   - apps/discovery
-  - apps/mcp
-  - apps/explorer
   - packages/core
   - packages/intents
   - packages/schemes
-  - packages/adapters/evm
-  - packages/adapters/svm
-  - packages/adapters/sui
-  - packages/adapters/near
-  - packages/adapters/ton
-  - packages/adapters/tron
-  - packages/adapters/xrpl
-  - packages/adapters/lightning
+  - packages/adapters
   - packages/quote
   - packages/status
   - packages/facilkit
