@@ -1,0 +1,68 @@
+x402Interop
+Copyright (C) 2026 THE3RDWEBLABS
+
+This repository is split across two copyleft licences. Which one applies
+depends on whether the code is published for reuse or operated as a
+service.
+
+  Published packages      GNU GPL v3.0 or later
+  ------------------      --------------------------------------------
+  packages/core           @x402interop/core
+  packages/adpt           @x402interop/adpt
+  packages/intents        @x402interop/intents
+  packages/facilkit       @x402interop/facilkit
+  packages/client         @x402interop/client
+  packages/servers        @x402interop/servers
+
+  These are libraries other people install and run in their own
+  programs. They are licensed under the GNU General Public License,
+  version 3 or later. The full text is in LICENSE. Every source file
+  carries `SPDX-License-Identifier: GPL-3.0-or-later`.
+
+  Hosted applications   GNU AGPL v3.0 or later
+  --------------------  --------------------------------------------
+  apps/facilitator      facilitator service
+  apps/marketplace      marketplace web app
+  apps/interop          documentation + landing site
+
+  These are operated as network services by THE3RDWEBLABS, so they are
+  licensed under the GNU Affero General Public License, version 3 or
+  later. The full text is in LICENSE-AGPL. Every source file carries
+  `SPDX-License-Identifier: AGPL-3.0-or-later`.
+
+  Everything else            GNU GPL v3.0 or later
+  ------------------         --------------------------------------------
+  examples/                  sample programs others copy and run
+  tests/                     conformance and end-to-end tests
+  skills/                    the agent skill published with the repo
+  docs/                      the documentation source
+
+  These travel with the published packages, so they use the same GPL.
+  The documentation site that renders `docs/` is `apps/interop`, which
+  stays AGPL. The repository root `package.json` names GPL-3.0-or-later
+  because that is the licence of the libraries; each app overrides it.
+
+The Affero licence exists here to make one obligation explicit: if you
+run a modified version of a hosted application as a network service, you
+must offer its source to the users of that service. Merely using a
+published GPL package does not trigger that obligation.
+
+Each package's `package.json` declares the licence that applies to it and
+is authoritative for that package. Header comments in each source file
+repeat it.
+
+The packages in this repository depend on the upstream x402 TypeScript
+packages published by the x402 Foundation (`@x402/core`, `@x402/evm`,
+and the other `@x402/*` packages). Those packages follow the public
+x402 specification v2 and are licensed under the Apache License,
+Version 2.0:
+
+  https://github.com/x402-foundation/x402
+
+This repository uses those packages as dependencies. It does not vendor
+their source. Field names in `packages/core` follow that specification.
+If a later change vendors upstream source, keep the Apache-2.0 header
+on those files and record the upstream path here.
+
+NEAR Intents and the 1Click API are third-party services. This
+repository does not include their code.
