@@ -1,0 +1,6 @@
+{
+  "status": "SUCCESS",
+  "depositAddress": "0x1c1234567890abcdef1234567890abcdef123456",
+  "originTxHash": "0xmockorigin",
+  "destinationTxHash": "0xmockdest"
+}

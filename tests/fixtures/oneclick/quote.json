@@ -1,0 +1,8 @@
+{
+  "quoteId": "mock-abc123def456",
+  "depositAddress": "0x1c1234567890abcdef1234567890abcdef123456",
+  "originAmount": "50000",
+  "destinationAmount": "50000",
+  "timeEstimateSeconds": 45,
+  "expiresAt": "2026-10-27T12:05:00Z"
+}
