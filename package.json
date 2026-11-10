@@ -14,7 +14,7 @@
     "node": ">=22",
     "pnpm": ">=11.1.1"
   },
-  "packageManager": "pnpm@11.5.0",
+  "packageManager": "pnpm@12.18.0",
   "scripts": {
     "build": "turbo run build",
     "lint": "eslint . --max-warnings 0",
