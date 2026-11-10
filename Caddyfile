@@ -1,0 +1,45 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Copyright (c) 2026 THE3RDWEBLABS (https://github.com/the3rdweblabs)
+# [native]
+# Local edge with the same host layout as production. Browsers resolve *.localhost
+# to this machine, so no DNS or hosts-file change is needed.
+#
+#   x402interop.localhost              main project site   -> interop (port 4322)
+#   marketplace.x402interop.localhost  marketplace         -> marketplace (port 4321)
+#   docs.x402interop.localhost         docs                -> interop (port 4322), /docs
+#   facilitator.x402interop.localhost  facilitator API     -> facilitator (port 4020)
+#
+# Run with: docker compose --profile proxy up -d
+# Caddy issues its own certificates. Trust its local root once (see docs/guides/deployment.md)
+# or accept the warning in the browser.
+
+{
+	skip_install_trust
+}
+
+x402interop.localhost:8443 {
+	tls internal
+	encode zstd gzip
+	@docs path /docs /docs/*
+	redir @docs https://docs.x402interop.localhost:8443{uri} 301
+	reverse_proxy host.docker.internal:4322
+}
+
+marketplace.x402interop.localhost:8443 {
+	tls internal
+	encode zstd gzip
+	reverse_proxy host.docker.internal:4321
+}
+
+docs.x402interop.localhost:8443 {
+	tls internal
+	encode zstd gzip
+	rewrite / /docs/intro
+	reverse_proxy host.docker.internal:4322
+}
+
+facilitator.x402interop.localhost:8443 {
+	tls internal
+	encode zstd gzip
+	reverse_proxy host.docker.internal:4020
+}
