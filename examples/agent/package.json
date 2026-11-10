@@ -1,0 +1,37 @@
+{
+  "name": "x402interop-example-agent",
+  "version": "0.0.0",
+  "description": "OpenAI agent example paying x402Interop-protected resources from one source wallet (no external facilitator URL).",
+  "license": "GPL-3.0-or-later",
+  "author": "THE3RDWEBLABS",
+  "type": "module",
+  "sideEffects": false,
+  "private": true,
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --max-warnings 0",
+    "lint:check": "eslint . --max-warnings 0",
+    "test": "vitest run --coverage",
+    "start": "node --env-file=.env dist/cli.js"
+  },
+  "dependencies": {
+    "@x402interop/client": "workspace:*",
+    "@x402interop/core": "workspace:*",
+    "openai": "^4.0.0",
+    "viem": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "@typescript/native": "catalog:",
+    "@typescript/typescript6": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "@x402interop/facilkit": "workspace:*",
+    "@x402interop/intents": "workspace:*",
+    "@x402interop/servers": "workspace:*",
+    "tsup": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

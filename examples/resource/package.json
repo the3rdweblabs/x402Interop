@@ -1,0 +1,37 @@
+{
+  "name": "x402interop-example-resource",
+  "version": "0.0.0",
+  "description": "Protected resource service example for x402Interop (no external facilitator URL).",
+  "license": "GPL-3.0-or-later",
+  "author": "THE3RDWEBLABS",
+  "type": "module",
+  "sideEffects": false,
+  "private": true,
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --max-warnings 0",
+    "lint:check": "eslint . --max-warnings 0",
+    "test": "vitest run --coverage",
+    "dev": "node --env-file=.env --watch dist/cli.js",
+    "start": "node --env-file=.env dist/cli.js"
+  },
+  "dependencies": {
+    "@x402interop/core": "workspace:*",
+    "@x402interop/facilkit": "workspace:*",
+    "@x402interop/intents": "workspace:*",
+    "@x402interop/servers": "workspace:*",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "@typescript/native": "catalog:",
+    "@typescript/typescript6": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "@x402interop/client": "workspace:*",
+    "tsup": "catalog:",
+    "typescript": "catalog:",
+    "viem": "catalog:",
+    "vitest": "catalog:"
+  }
+}
