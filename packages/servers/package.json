@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Seller framework bindings (express, hono, fastify, next) for the x402interop payment middleware.",
   "license": "GPL-3.0-or-later",
-  "author": "THe3RDWEBLABS",
+  "author": "THE3RDWEBLABS",
   "type": "module",
   "sideEffects": false,
   "main": "./dist/index.cjs",
