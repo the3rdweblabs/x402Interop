@@ -1,0 +1,107 @@
+{
+  "name": "@x402interop/adpt",
+  "version": "1.0.0",
+  "description": "Unified adapters for all x402 and x402Interop families (subpath exports per family)",
+  "license": "GPL-3.0-or-later",
+  "author": "THE3RDWEBLABS",
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./evm": {
+      "types": "./dist/evm/index.d.ts",
+      "import": "./dist/evm/index.js",
+      "require": "./dist/evm/index.cjs"
+    },
+    "./svm": {
+      "types": "./dist/svm/index.d.ts",
+      "import": "./dist/svm/index.js",
+      "require": "./dist/svm/index.cjs"
+    },
+    "./sui": {
+      "types": "./dist/sui/index.d.ts",
+      "import": "./dist/sui/index.js",
+      "require": "./dist/sui/index.cjs"
+    },
+    "./near": {
+      "types": "./dist/near/index.d.ts",
+      "import": "./dist/near/index.js",
+      "require": "./dist/near/index.cjs"
+    },
+    "./ton": {
+      "types": "./dist/ton/index.d.ts",
+      "import": "./dist/ton/index.js",
+      "require": "./dist/ton/index.cjs"
+    },
+    "./tron": {
+      "types": "./dist/tron/index.d.ts",
+      "import": "./dist/tron/index.js",
+      "require": "./dist/tron/index.cjs"
+    },
+    "./xrpl": {
+      "types": "./dist/xrpl/index.d.ts",
+      "import": "./dist/xrpl/index.js",
+      "require": "./dist/xrpl/index.cjs"
+    },
+    "./lightning": {
+      "types": "./dist/lightning/index.d.ts",
+      "import": "./dist/lightning/index.js",
+      "require": "./dist/lightning/index.cjs"
+    },
+    "./aptos": {
+      "types": "./dist/aptos/index.d.ts",
+      "import": "./dist/aptos/index.js",
+      "require": "./dist/aptos/index.cjs"
+    },
+    "./stellar": {
+      "types": "./dist/stellar/index.d.ts",
+      "import": "./dist/stellar/index.js",
+      "require": "./dist/stellar/index.cjs"
+    },
+    "./starknet": {
+      "types": "./dist/starknet/index.d.ts",
+      "import": "./dist/starknet/index.js",
+      "require": "./dist/starknet/index.cjs"
+    },
+    "./utxo": {
+      "types": "./dist/utxo/index.d.ts",
+      "import": "./dist/utxo/index.js",
+      "require": "./dist/utxo/index.cjs"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --max-warnings 0",
+    "lint:check": "eslint . --max-warnings 0",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@x402/aptos": "^2.29.0",
+    "@x402/core": "^2.29.0",
+    "@x402/evm": "^2.29.0",
+    "@x402/near": "^2.29.0",
+    "@x402/stellar": "^2.29.0",
+    "@x402/svm": "^2.29.0",
+    "@x402/tvm": "^2.29.0",
+    "@x402/xrpl": "^2.29.0",
+    "@x402interop/core": "workspace:*",
+    "@solana/kit": "^8.5.0",
+    "@mysten/sui": "^2.38.0"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "tsup": "catalog:",
+    "typescript": "catalog:",
+    "viem": "catalog:",
+    "vitest": "catalog:"
+  },
+  "private": true
+}
