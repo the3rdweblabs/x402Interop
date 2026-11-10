@@ -1,0 +1,47 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Copyright (c) 2026 THE3RDWEBLABS (https://github.com/the3rdweblabs)
+# [native]
+<!--
+provenance: "native"
+copyright: "2026 THE3RDWEBLABS"
+-->
+
+# x402interop
+
+> Open-source cross-chain facilitator, scheme family, and discovery layer for x402. Lets an agent pay on its own chain while the seller is paid on a different chain, using NEAR Intents for settlement. Status: design and early build; API shapes are drafts.
+
+## Get Started
+- [Introduction](/intro): what x402interop does and who it is for
+- [Overview](/concept/overview): problem, solution, payment paths
+- [Quickstart](/guides/quickstart): 5-minute end-to-end cross-chain payment
+
+## Concepts
+- [Schemes](/concept/schemes): x402interop-* family + exact/upto/auth-capture/batch-settlement
+- [Payment paths](/concept/payment-paths): deposit_address, intents_balance, lightning_topup
+- [Wire format](/concept/wire-format): PAYMENT-SIGNATURE → PAYMENT-REQUIRED → PAYMENT-RESPONSE
+
+## Guides
+- [Seller integration](/guides/seller): protect HTTP routes, delivery modes, discovery
+- [Buyer integration](/guides/buyer): wrapFetchWithInterop, createInteropClient, signing
+- [Facilitator](/guides/facilitator): run createFacilitatorServer, endpoints, config
+- [MCP & agents](/guides/mcp): search_services, pay_and_fetch, mandate
+- [Deployment](/guides/deployment): components, config, rollout, monitoring
+- [Live canary](/guides/live-canary): quote, send, poll 1Click swaps
+- [Walkthrough](/guides/walkthrough): end-to-end product flow
+
+## Reference
+- [Chain & asset coverage](/reference/chains-and-assets): 26 chains, 74 assets
+- [Security & trust model](/reference/security): threats, mitigations, custody
+- [Test report](/reference/test-report): measurement template
+- [API surface](/reference/api): package-by-package exports
+
+## Specs
+- [Scheme spec](/specs/scheme): payload, verify, settle, refund
+- [Facilitator API](/specs/facilitator-api): /supported, /verify, /settle, /interop/quote
+- [Scheme specs (mirrored)](/specs/schemes): official x402 specs per chain
+
+## Internal
+- [Project notes](/internal/project-notes): research and decisions log
+
+## Product
+- [Whitepaper](/whitepaper): downloadable whitepaper

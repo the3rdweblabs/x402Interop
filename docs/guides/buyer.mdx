@@ -1,0 +1,89 @@
+---
+title: Buyer integration guide
+description: Wrap fetch to auto-handle 402, build an interop client, register schemes, and sign cross-chain payments.
+icon: user
+---
+
+<!--
+provenance: "native"
+copyright: "2026 THE3RDWEBLABS (https://github.com/the3rdweblabs)"
+-->
+
+# Buyer integration guide
+
+## Auto-handle 402 with wrapFetchWithInterop
+
+```ts
+import { wrapFetchWithInterop } from '@x402interop/client'
+
+const fetchWithInterop = wrapFetchWithInterop(fetch, { spendControls: false })
+
+const res = await fetchWithInterop('https://seller.example/report', {
+  headers: { accept: 'application/json' },
+})
+// 1st call → 402 with PAYMENT-REQUIRED
+// wrapper signs and retries with PAYMENT-SIGNATURE
+// 2nd call → 200
+```
+
+## Full client with custom signer
+
+```ts
+import { createInteropClient, registerInteropHandlers } from '@x402interop/client'
+
+const { client, http } = createInteropClient({ spendControls: false })
+
+http.onPaymentRequired(async () => ({
+  headers: { 'x-retry-hook': 'yes' },
+}))
+
+// Register interop scheme clients per (family × network)
+registerInteropHandlers({
+  register(network, schemeClient) {
+    // schemeClient.createPaymentPayload(requirements) builds the binding
+  },
+  { networks: ['eip155:8453', 'sui:mainnet'] },
+})
+```
+
+`client` is the upstream `x402Client`; `http` carries `createPaymentPayload`, `encodePaymentSignatureHeader`, and `getPaymentRequiredResponse`. Same shapes, same headers, same `PAYMENT-SIGNATURE` - zero upstream client changes for same-chain `exact`.
+
+## Signing an EVM interop payment
+
+```ts
+import { buildEvmPaymentPayload, sendEvmPayment } from '@x402interop/client'
+
+const payload = await buildEvmPaymentPayload(
+  {
+    privateKey: process.env.BUYER_PRIVATE_KEY!,
+    depositAddress: requirements.payTo as `0x${string}`,
+    amount: quote.originAmount,
+    tokenAddress: config.buyer.asset,
+    chain: { id: 8453 },
+    originNetwork: quote.originNetwork,
+    originAsset: quote.originAsset,
+    originAmount: quote.originAmount,
+  },
+  binding,
+)
+
+// Retry the resource
+const signature = encode({ x402Version: 2, accepted: requirements, payload })
+fetch(url, { headers: { 'PAYMENT-SIGNATURE': signature } })
+```
+
+## Header contract
+
+<div>
+  <div title="Request" icon="arrow-right">
+    `PAYMENT-SIGNATURE` - only accepted payment header.
+  </div>
+  <div title="Response (unpaid)" icon="arrow-left">
+    `PAYMENT-REQUIRED`.
+  </div>
+  <div title="Response (paid)" icon="check">
+    `PAYMENT-RESPONSE`.
+  </div>
+</div>
+
+Removed: `x-payment`, `X-PAYMENT`, `x402-payment`, `X402-PAYMENT`, `x-payment-signature`, `X-PAYMENT-REQUIRED`, `X-PAYMENT-RESPONSE`.

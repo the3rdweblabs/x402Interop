@@ -1,0 +1,67 @@
+---
+title: Overview
+description: The problem x402interop solves, the solution, and the three payment paths.
+icon: layers
+---
+
+<!--
+provenance: "native"
+copyright: "2026 THE3RDWEBLABS (https://github.com/the3rdweblabs)"
+-->
+
+# Overview
+
+## The problem
+
+AI agents are starting to pay for APIs and data over x402. But each payment is tied to one chain, discovery is split across separate catalogs, and agents or sellers must juggle wallets on several chains. An agent holding USDC on Base cannot simply pay a seller who wants USDC on Sui.
+
+## The solution
+
+x402interop is an open-source cross-chain facilitator, scheme family, and discovery layer for x402. Cross-chain settlement goes through NEAR Intents (1Click API).
+
+- A buyer on chain A can pay a seller on chain B using only wallets they already have.
+- Compatible with x402 already deployed on each chain. Same-chain payments pass through unchanged.
+- No facilitator float. The facilitator never fronts its own money.
+- Agents can discover x402 services across chains.
+- Fast enough for HTTP: swaps must not sit inside the request unless the seller chooses to wait.
+
+## Payment paths
+
+<div>
+  <div title="Deposit address (default)" icon="address-book">
+    For buyers without an Intents balance. 1Click mints a single-use deposit address; the buyer
+    transfers to it; NEAR Intents swaps and delivers to the seller.
+  </div>
+  <div title="Intents balance" icon="credit-card">
+    For repeat buyers with an Intents balance. Buyer deposits once; later quotes use `depositType:
+    INTENTS`, skipping origin-chain confirmation.
+  </div>
+  <div title="Lightning top-up" icon="zap">
+    For Bitcoin payers. Facilitator issues a Lightning invoice; the top-up is swapped to stablecoin
+    through Intents and becomes spendable credit.
+  </div>
+</div>
+
+| Path                        | When to use                          | How it works                                                                                                              |
+| --------------------------- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------- |
+| `deposit_address` (default) | Buyer has origin-chain funds         | 1Click mints a single-use deposit address; the buyer transfers to it; NEAR Intents swaps and delivers to the seller.      |
+| `intents_balance`           | Repeat buyer with an Intents balance | Buyer deposits once into an Intents balance; later quotes use `depositType: INTENTS`, skipping origin-chain confirmation. |
+| `lightning_topup`           | Bitcoin payers                       | Facilitator issues a Lightning invoice; the top-up is swapped to stablecoin through Intents and becomes spendable credit. |
+
+## Delivery mode (seller choice)
+
+| Mode           | Seller serves when          | Best for           | Seller exposure                                                            |
+| -------------- | --------------------------- | ------------------ | -------------------------------------------------------------------------- |
+| `on_deposit`   | Origin deposit confirmed    | Cheap, fast calls  | Swap fails after serving: buyer is refunded, seller loses the call's value |
+| `on_success`   | Swap reports success        | Expensive calls    | None                                                                       |
+| `pending_push` | Result is pushed on success | Long-running tasks | None                                                                       |
+
+## Core decisions
+
+- Own facilitator, compatible with x402 already deployed. Same-chain payments pass through later.
+- One scheme family, keyed by the buyer's chain family.
+- No facilitator float and no pre-positioned buyer wallets.
+- Default path is a deposit address plus a seller-chosen delivery mode.
+- Bitcoin is payer-only, via Lightning top-up, not an Intents Lightning feature.
+- Licence is split. Published packages are GPL-3.0-or-later; the hosted apps are AGPL-3.0-or-later. See `NOTICE`.
+- Public packages version together from `1.0.0`.

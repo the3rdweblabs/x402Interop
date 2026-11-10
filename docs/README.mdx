@@ -1,0 +1,57 @@
+---
+title: x402interop
+description: Cross-chain x402 payments - pay on any chain, get paid on any chain, settled by NEAR Intents.
+sidebar: Getting started
+order: 1
+---
+
+<!--
+provenance: "native"
+copyright: "2026 THE3RDWEBLABS (https://github.com/the3rdweblabs)"
+-->
+
+# x402interop
+
+Open-source cross-chain facilitator, scheme family, and discovery layer for x402. A buyer agent pays on the chain it already uses; a seller is paid on the chain it already uses. Cross-chain settlement runs on NEAR Intents.
+
+## What it does
+
+- **Pay from where you are.** The buyer signs a gasless payment on its own chain - no bridge, no extra wallet.
+- **Get paid where you want.** The seller receives an exact amount on its own chain via NEAR Intents.
+- **Find anything.** One search across federated catalogs, exposed as MCP tools.
+- **Fast enough for HTTP.** Tiered delivery keeps the swap off the critical path.
+- **Bitcoin included.** BTC holders top up over Lightning and spend as stablecoin.
+- **No float.** The facilitator never fronts its own liquidity.
+
+## Who it is for
+
+- API and data sellers who want agent revenue without running wallets on many chains.
+- Agent builders who want one payment tool across chains.
+- Chains and ecosystems that want their services reachable by agents everywhere.
+
+## Start here
+
+| Audience                                | Guide                                    |
+| --------------------------------------- | ---------------------------------------- |
+| Seller protecting a resource            | [Seller guide](/guides/seller)           |
+| Buyer / agent paying for x402 resources | [Buyer guide](/guides/buyer)             |
+| Running a facilitator                   | [Facilitator guide](/guides/facilitator) |
+| Agent via MCP                           | [MCP guide](/guides/mcp)                 |
+| 5-minute end-to-end flow                | [Quickstart](/guides/quickstart)         |
+
+## Reference
+
+- [Chain & asset coverage](/reference/chains-and-assets) - 26 chains, 74 assets, scheme implementation sources
+- [Wire format](/concept/wire-format) - `PAYMENT-SIGNATURE` → `PAYMENT-REQUIRED` → `PAYMENT-RESPONSE`
+- [Security & trust model](/reference/security)
+- [API surface](/reference/api)
+- [Specs](/specs/scheme) - scheme spec + facilitator API
+- [Scheme specs (mirrored from upstream x402)](/specs/schemes)
+
+## Product site
+
+A downloadable whitepaper is reserved at [/whitepaper](/whitepaper) (coming soon).
+
+## Status
+
+Design and early build. Measured performance will be published in the [test report](/reference/test-report) once corridors have been run.

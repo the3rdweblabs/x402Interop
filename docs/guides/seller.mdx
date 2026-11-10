@@ -1,0 +1,110 @@
+---
+title: Seller integration guide
+description: Protect HTTP routes with x402interop middleware, choose a delivery mode, and register for discovery.
+icon: building
+---
+
+<!--
+provenance: "native"
+copyright: "2026 THE3RDWEBLABS (https://github.com/the3rdweblabs)"
+-->
+
+# Seller integration guide
+
+You run an HTTP API and want agents on any chain to pay you on the chain you prefer.
+
+## What you need
+
+- A receiving address on your preferred chain and the stablecoin you want to receive.
+- A facilitator endpoint and API key (self-hosted or provided).
+- Middleware: `@x402interop/servers` with subpaths `./express`, `./hono`, `./fastify`, and `./next`.
+
+## Steps
+
+1. **Choose where to be paid.** Pick one settlement network and asset. You never need wallets on other chains.
+2. **Add the middleware** to the routes you want to charge for.
+3. **Pick a delivery mode** (below).
+4. **Register in discovery** so agents can find you.
+5. **Handle webhooks** (optional) for `success`, `refunded`, `failed`. Webhook delivery is not implemented yet.
+
+## Minimal example
+
+```ts
+import { x402interop } from '@x402interop/servers/express'
+
+app.get(
+  '/api/premium/report',
+  x402interop({
+    facilitator: process.env.FACILITATOR_URL,
+    apiKey: process.env.FACILITATOR_API_KEY,
+    payTo: process.env.SELLER_ADDRESS,
+    network: 'sui:mainnet',
+    asset: process.env.SELLER_ASSET,
+    price: '0.05',
+    amount: '50000',
+    deliveryMode: 'on_deposit',
+  }),
+  (req, res) => res.json({ report: '…' }),
+)
+```
+
+## What the middleware does
+
+1. If the request has no payment, it mints a quote through `@x402interop/intents` (REST or the official SDK client, with failover), or through the facilitator's `/interop/quote` when there is no local key, and returns 402 with payment requirements that include a single-use deposit address.
+2. If the request has a payment, it calls the facilitator's `/verify` and then `/settle`. The route runs only after settlement succeeds for the delivery mode you picked, and the response carries `PAYMENT-RESPONSE`. If the facilitator cannot be reached, the middleware answers 402 with `retryable: true` and does not serve the resource.
+
+You can keep your existing x402 options (for example a native `exact` option on your own chain) in the same 402 response alongside the x402interop one.
+
+## Choosing a delivery mode
+
+<div>
+  <div title="on_deposit" icon="clock">
+    Calls are cheap and fast. If the swap fails after you serve, the buyer is refunded and you lose
+    that call's value. Cap exposure per buyer.
+  </div>
+  <div title="on_success" icon="shield-check">
+    Calls are expensive. Buyer waits for the swap.
+  </div>
+  <div title="pending_push" icon="send">
+    Long-running jobs. Return 202 with a status URL; deliver the result on success.
+  </div>
+</div>
+
+| Mode           | Use when                 | Trade-off                                                                  |
+| -------------- | ------------------------ | -------------------------------------------------------------------------- |
+| `on_deposit`   | Calls are cheap and fast | Swap fails after serving: buyer is refunded, seller loses the call's value |
+| `on_success`   | Calls are expensive      | Buyer waits for the swap                                                   |
+| `pending_push` | Long-running jobs        | Return 202 with a status URL; deliver on success                           |
+
+### Destination delivery
+
+By default the merchant receives on its own chain: the quote uses `recipientType: DESTINATION_CHAIN` and `recipient` is the merchant's address. The buyer pays a single-use 1Click deposit address on the origin chain, and 1Click settles to the merchant's address. The merchant address is the final hop, not the 402 `payTo`.
+
+Confirmed direct destinations: Sui, Base, Solana, Aptos, Ethereum, Arbitrum, Optimism, Polygon, Avalanche, Berachain, Plasma, X Layer, and Scroll. BNB Chain quotes only above a temporary minimum (advertised as $1,000 on 5 November 2026; $1,001 quoted). Stellar needs a USDC trustline on the merchant account. Monad does not quote.
+
+A NEAR destination now quotes directly to an existing `.near` account, and x402Interop always uses `recipientType: DESTINATION_CHAIN`: the merchant receives at its final address, with 1Click charging a `withdrawFee` for the final `ft_transfer`. A micro settlement is still pending to confirm the on-chain delivery. NEAR as an origin is not quoted by 1Click.
+
+See [1Click route matrix](/reference/oneclick-route-matrix) and [1Click swap lifecycle](/reference/oneclick-swap-lifecycle).
+
+## Pricing
+
+- Quote the price in the stablecoin you receive. The buyer's cost includes swap fees and slippage.
+- Intents applies a 0.2% fee by default without a partner API key; a partner key (held by the facilitator) can reduce this.
+
+## Registering for discovery
+
+Provide: resource URL, short description, price, accepted networks, input/output schema, and contact. The index probes your URL, expects a valid 402, and lists you when healthy. Keep descriptions factual: agents read them, and misleading text is grounds for delisting.
+
+## Security checklist
+
+- Verify webhook signatures.
+- Never log or expose the facilitator API key.
+- Serve only after the event your delivery mode requires. `/interop/status/:id` returns `deliverable`; for `on_success` and `pending_push` it stays false until 1Click reports `SUCCESS`.
+- Set per-buyer exposure caps for `on_deposit`; the facilitator exposes `EXPOSURE_LIMIT_PER_BUYER` and `EXPOSURE_LIMIT_PER_SELLER`.
+- Refunds on the 1Click path are automatic to the quote's `refundTo`; exact non-EVM payments are non-custodial and refund on the origin chain. The status response exposes `refund` and `refundTo`.
+- Treat the buyer's identity as an address, not a person.
+- The seller middleware defaults to `PAYMENT_REQUIRED_BODY=auto`: browsers get the full JSON requirements in the body, API clients get the minimal x402.org-style body, and the full data is always in the `PAYMENT-REQUIRED` header. Use `json` to force full JSON, `error` to force minimal, or `empty` for no body.
+
+## Testing
+
+There is no NEAR Intents testnet. Test with small amounts and one corridor first.
