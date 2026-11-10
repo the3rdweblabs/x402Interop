@@ -1,0 +1,73 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Copyright (c) 2026 THE3RDWEBLABS (https://github.com/the3rdweblabs)
+# [native]
+# Same four sites as deploy/Caddyfile.production, for a host that already
+# terminates TLS. Railway does that and injects PORT. This file does not
+# ask Let's Encrypt and does not mention x402interop.xyz.
+#
+# One Railway service (x402interop-edge) runs this Caddyfile. The apps stay
+# private. Public names are prefixed so they are not the bare words Railway
+# has already given to other people (marketplace.up.railway.app and the like).
+# Request these names when generating each domain. No scheme, no port.
+#
+#   SITE_HOST            x402interop.up.railway.app
+#   DOCS_HOST            x402interop-docs.up.railway.app
+#   MARKETPLACE_HOST     x402interop-marketplace.up.railway.app
+#   FACILITATOR_HOST     x402interop-facilitator.up.railway.app
+#   INTEROP_UPSTREAM     x402interop.railway.internal:$PORT
+#   MARKETPLACE_UPSTREAM x402interop-marketplace.railway.internal:$PORT
+#   FACILITATOR_UPSTREAM x402interop-facilitator.railway.internal:$PORT
+#
+# A Railway-provided name is one label, so docs.x402interop.up.railway.app
+# is not available. The dotted hosts belong to x402interop.xyz
+# (docs.x402interop.xyz and the rest) once that domain has DNS.
+# Docs is a second public name for the site service. Both SITE_HOST and
+# DOCS_HOST proxy to INTEROP_UPSTREAM.
+#
+# Railway will only deliver a hostname to this container when that hostname
+# is attached to this service. A second service's own *.up.railway.app name
+# stays on that service, so attach all four public names here (the generated
+# one plus three you add) or let each app be public on its own and do not
+# use this file as the edge.
+#
+# Build the two Astro apps with PUBLIC_* set to https:// plus these hosts,
+# and set FACILITATOR_CORS_ORIGINS to https://{$MARKETPLACE_HOST}.
+
+{
+	auto_https off
+	admin off
+	servers {
+		trusted_proxies static private_ranges
+	}
+}
+
+:{$PORT:8080} {
+	encode zstd gzip
+
+	@docs host {$DOCS_HOST:x402interop-docs.up.railway.app}
+	handle @docs {
+		rewrite / /docs/intro
+		reverse_proxy {$INTEROP_UPSTREAM}
+	}
+
+	@site host {$SITE_HOST:x402interop.up.railway.app}
+	handle @site {
+		@docspath path /docs /docs/*
+		redir @docspath https://{$DOCS_HOST:x402interop-docs.up.railway.app}{uri} 301
+		reverse_proxy {$INTEROP_UPSTREAM}
+	}
+
+	@market host {$MARKETPLACE_HOST:x402interop-marketplace.up.railway.app}
+	handle @market {
+		reverse_proxy {$MARKETPLACE_UPSTREAM}
+	}
+
+	@api host {$FACILITATOR_HOST:x402interop-facilitator.up.railway.app}
+	handle @api {
+		reverse_proxy {$FACILITATOR_UPSTREAM}
+	}
+
+	handle {
+		respond "unknown host" 404
+	}
+}

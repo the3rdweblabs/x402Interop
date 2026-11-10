@@ -172,14 +172,16 @@ The first four answers are `200`. The last is `301` to `https://docs.x402interop
 
 **Railway, using Railway's own hostnames.** `deploy/Caddyfile.railway` is the same four sites. Railway's edge already terminates TLS and sets `PORT`, so this file does not request a certificate and does not mention `x402interop.xyz`. Run Caddy as one service. Keep the interop app, the marketplace, and the facilitator as private services in the same project, and set:
 
-| Variable | Example |
+| Variable | Value |
 |---|---|
-| `SITE_HOST` | the Caddy service's `*.up.railway.app` name, no scheme |
-| `DOCS_HOST` | docs name attached to that same service |
-| `MARKETPLACE_HOST` | marketplace name attached to that same service |
-| `FACILITATOR_HOST` | facilitator name attached to that same service |
-| `INTEROP_UPSTREAM` | `interop.railway.internal:8080` |
-| `MARKETPLACE_UPSTREAM` | `marketplace.railway.internal:8080` |
-| `FACILITATOR_UPSTREAM` | `facilitator.railway.internal:8080` |
+| `SITE_HOST` | `x402interop.up.railway.app` |
+| `DOCS_HOST` | `x402interop-docs.up.railway.app` |
+| `MARKETPLACE_HOST` | `x402interop-marketplace.up.railway.app` |
+| `FACILITATOR_HOST` | `x402interop-facilitator.up.railway.app` |
+| `INTEROP_UPSTREAM` | `x402interop.railway.internal:$PORT` |
+| `MARKETPLACE_UPSTREAM` | `x402interop-marketplace.railway.internal:$PORT` |
+| `FACILITATOR_UPSTREAM` | `x402interop-facilitator.railway.internal:$PORT` |
+
+These public names are the ones to request. Each Railway-provided name is a single label under `up.railway.app`, so `docs.x402interop.up.railway.app` cannot be issued. The dotted form (`docs.x402interop.xyz`) waits for the custom domain. Docs is a second public name on the edge for the same site service. `$PORT` is the port that private service listens on.
 
 Rebuild the Astro apps with `https://` plus those hosts (`PUBLIC_SITE_URL`, `PUBLIC_DOCS_URL`, `PUBLIC_FACILITATOR_URL`, `PUBLIC_MARKETPLACE_URL`). Set `FACILITATOR_CORS_ORIGINS` to `https://` plus `MARKETPLACE_HOST`. Railway only sends a hostname to this container when the hostname is attached to the Caddy service. Another service's generated `*.up.railway.app` name stays on that service. Attach all four public names to the Caddy service, or publish each app on its own Railway URL and do not put this file in front.

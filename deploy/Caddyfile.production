@@ -1,0 +1,60 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Copyright (c) 2026 THE3RDWEBLABS (https://github.com/the3rdweblabs)
+# [native]
+# Production edge for x402interop.xyz. Same four hosts as the local Caddyfile,
+# with static builds served from disk and the facilitator reverse-proxied.
+# Keep this file for that domain. A host that already terminates TLS, such as
+# Railway, uses deploy/Caddyfile.railway instead.
+#
+#   x402interop.xyz                  main project site   (interop build)
+#   marketplace.x402interop.xyz      marketplace         (marketplace build)
+#   docs.x402interop.xyz             docs                (interop build, /docs)
+#   facilitator.x402interop.xyz      facilitator API     (reverse proxy)
+#
+# Caddy issues certificates once DNS points at this host. Set ACME_EMAIL in the
+# deploy environment.
+
+{
+	email {$ACME_EMAIL}
+}
+
+(security_headers) {
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+	}
+}
+
+x402interop.xyz {
+	import security_headers
+	encode zstd gzip
+	@docs path /docs /docs/*
+	redir @docs https://docs.x402interop.xyz{uri} 301
+	root * {$INTEROP_ROOT:/srv/interop}
+	try_files {path} {path}/index.html
+	file_server
+}
+
+marketplace.x402interop.xyz {
+	import security_headers
+	encode zstd gzip
+	root * {$MARKETPLACE_ROOT:/srv/marketplace}
+	try_files {path} {path}/index.html
+	file_server
+}
+
+docs.x402interop.xyz {
+	import security_headers
+	encode zstd gzip
+	rewrite / /docs/intro
+	root * {$INTEROP_ROOT:/srv/interop}
+	try_files {path} {path}/index.html
+	file_server
+}
+
+facilitator.x402interop.xyz {
+	import security_headers
+	encode zstd gzip
+	reverse_proxy {$FACILITATOR_UPSTREAM:host.docker.internal:4020}
+}
