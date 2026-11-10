@@ -1,0 +1,171 @@
+---
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (c) 2026 THE3RDWEBLABS (https://github.com/the3rdweblabs)
+// [native]
+// One template for every docs page. Navigation comes from src/lib/docs-nav.ts; the
+// page title is rendered once here, and the content's own first heading is hidden in CSS.
+import Layout from '../../layouts/Layout.astro';
+import { DOC_SECTIONS, HIDDEN_SLUGS, orderedEntries, sectionFor } from '../../lib/docs-nav';
+
+interface Heading {
+  depth: number;
+  slug: string;
+  text: string;
+}
+interface DocModule {
+  frontmatter?: { title?: string; description?: string };
+  Content: any;
+  getHeadings?: () => Heading[];
+}
+
+const pages = import.meta.glob('../../content/docs/**/*.{md,mdx}', { eager: true }) as Record<string, DocModule>;
+
+function keyToSlug(pathKey: string): string {
+  return pathKey.replace('../../content/docs/', '').replace(/\.(md|mdx)$/, '');
+}
+
+const modules = new Map(Object.entries(pages).map(([key, mod]) => [keyToSlug(key), mod]));
+const publishedSlugs = [...modules.keys()].filter((slug) => !HIDDEN_SLUGS.has(slug)).sort();
+
+export async function getStaticPaths() {
+  const found = import.meta.glob('../../content/docs/**/*.{md,mdx}', { eager: true });
+  return Object.keys(found)
+    .map((key) => key.replace('../../content/docs/', '').replace(/\.(md|mdx)$/, ''))
+    .filter((slug) => !HIDDEN_SLUGS.has(slug))
+    .map((slug) => ({ params: { slug }, props: { slug } }));
+}
+
+function titleFor(slug: string, mod: DocModule | undefined): string {
+  const listed = orderedEntries().find((entry) => entry.slug === slug);
+  if (listed) return listed.title;
+  if (mod?.frontmatter?.title) return mod.frontmatter.title;
+  const first = mod?.getHeadings?.().find((heading) => heading.depth === 1);
+  return first?.text ?? (slug.split('/').pop() ?? slug);
+}
+
+const { slug } = Astro.props as { slug: string };
+const mod = modules.get(slug);
+if (!mod) throw new Error(`Missing docs module for ${slug}`);
+const Content = mod.Content;
+
+const pageTitle = titleFor(slug, mod);
+const description = mod.frontmatter?.description ?? '';
+const headings = (mod.getHeadings?.() ?? []).filter((heading) => heading.depth === 2 || heading.depth === 3);
+
+// Sections: the listed groups, then anything published but not listed under "More".
+const listed = new Set(DOC_SECTIONS.flatMap((section) => section.entries.map((entry) => entry.slug)));
+const others = publishedSlugs.filter((item) => !listed.has(item) && !item.startsWith('specs/schemes/'));
+const sections = [
+  ...DOC_SECTIONS.map((section) => ({
+    id: section.id,
+    label: section.label,
+    entries: section.prefix
+      ? publishedSlugs
+          .filter((item) => item.startsWith(section.prefix as string))
+          .map((item) => ({ slug: item, title: titleFor(item, modules.get(item)) }))
+      : section.entries
+          .filter((entry) => modules.has(entry.slug))
+          .map((entry) => ({ slug: entry.slug, title: entry.title })),
+  })),
+  ...(others.length > 0
+    ? [
+        {
+          id: 'more',
+          label: 'More',
+          entries: others.map((item) => ({ slug: item, title: titleFor(item, modules.get(item)) })),
+        },
+      ]
+    : []),
+].filter((section) => section.entries.length > 0);
+
+const current = sectionFor(slug);
+const currentSection = sections.find((section) => section.id === (current?.id ?? 'more')) ?? sections[0];
+const navKey: Record<string, string> = {
+  start: 'intro',
+  concepts: 'concept',
+  guides: 'guides',
+  reference: 'reference',
+  specs: 'specs',
+  schemes: 'specs',
+};
+const activeNav = navKey[current?.id ?? ''] ?? '';
+
+const ordered = orderedEntries().filter((entry) => modules.has(entry.slug));
+const index = ordered.findIndex((entry) => entry.slug === slug);
+const previous = index > 0 ? ordered[index - 1] : undefined;
+const next = index >= 0 && index < ordered.length - 1 ? ordered[index + 1] : undefined;
+const firstOfSection = currentSection?.entries[0]?.slug ?? 'intro';
+---
+
+<Layout title={pageTitle} description={description || 'x402Interop documentation.'} active={activeNav}>
+  <div class="wrap docs">
+    <aside class="docs__side" aria-label="Section pages">
+      <details class="side__mobile">
+        <summary>{currentSection?.label} pages</summary>
+        <div class="side__group">
+          <ul class="side__list">
+            {currentSection?.entries.map((entry) => (
+              <li><a class="side__link" href={`/docs/${entry.slug}`} aria-current={entry.slug === slug ? 'page' : undefined}>{entry.title}</a></li>
+            ))}
+          </ul>
+        </div>
+      </details>
+      <nav class="side__desktop" aria-label="Pages in this section">
+        <p class="side__label">{currentSection?.label}</p>
+        <ul class="side__list">
+          {currentSection?.entries.map((entry) => (
+            <li><a class="side__link" href={`/docs/${entry.slug}`} aria-current={entry.slug === slug ? 'page' : undefined}>{entry.title}</a></li>
+          ))}
+        </ul>
+      </nav>
+    </aside>
+
+    <div class="docs__main">
+      <header class="doc__head">
+        <nav class="crumbs" aria-label="Breadcrumb">
+          <a href="/docs/intro">Docs</a>
+          <span aria-hidden="true">/</span>
+          <a href={`/docs/${firstOfSection}`}>{currentSection?.label}</a>
+          <span aria-hidden="true">/</span>
+          <span aria-current="page">{pageTitle}</span>
+        </nav>
+        <h1 class="doc__title">{pageTitle}</h1>
+        {description && <p class="doc__desc">{description}</p>}
+      </header>
+
+      <article class="prose">
+        <Content />
+      </article>
+
+      <nav class="pager" aria-label="Previous and next pages">
+        {previous ? (
+          <a href={`/docs/${previous.slug}`} rel="prev">
+            <span>Previous</span>
+            <strong>{previous.title}</strong>
+          </a>
+        ) : <span></span>}
+        {next ? (
+          <a class="pager__next" href={`/docs/${next.slug}`} rel="next">
+            <span>Next</span>
+            <strong>{next.title}</strong>
+          </a>
+        ) : <span></span>}
+      </nav>
+    </div>
+
+    <aside class="toc" aria-label="On this page">
+      {headings.length > 0 && (
+        <>
+          <p class="toc__label">On this page</p>
+          <ul>
+            {headings.map((heading) => (
+              <li class={heading.depth === 3 ? 'toc--sub' : undefined}>
+                <a href={`#${heading.slug}`}>{heading.text}</a>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+    </aside>
+  </div>
+</Layout>

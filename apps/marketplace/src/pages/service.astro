@@ -1,0 +1,123 @@
+---
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (c) 2026 THE3RDWEBLABS (https://github.com/the3rdweblabs)
+// [native]
+import Layout from '../layouts/Layout.astro'
+---
+
+<Layout title="Service" description="A service listed on the marketplace." active="discover">
+  <p class="back"><a href="/">← Back to search</a></p>
+  <section class="phero">
+    <div class="phero__inner">
+      <h1 id="service-title">Loading service…</h1>
+      <p id="service-lede" class="phero__lede"></p>
+    </div>
+  </section>
+  <section>
+    <div id="service-actions" class="actions" hidden></div>
+    <p id="service-status" class="muted" hidden></p>
+    <div id="service-meta" class="panel" hidden></div>
+    <pre id="service-details" hidden></pre>
+  </section>
+</Layout>
+
+<script>
+  import { getResource, type Resource } from '../lib/marketplace'
+  import { quoteLinkFor } from '../lib/buy'
+  import { isHttpUrl } from '../lib/validate'
+  import { labelForNetwork } from '../lib/network-labels'
+  import { shortenAddress } from '@x402interop/core'
+
+  const id = new URLSearchParams(window.location.search).get('id')
+  const title = document.getElementById('service-title')
+  const lede = document.getElementById('service-lede')
+  const actions = document.getElementById('service-actions')
+  const status = document.getElementById('service-status')
+  const meta = document.getElementById('service-meta')
+  const details = document.getElementById('service-details')
+
+  function link(href: string, label: string, primary = false): HTMLAnchorElement {
+    const anchor = document.createElement('a')
+    anchor.href = href
+    anchor.textContent = label
+    anchor.className = primary ? 'btn btn--primary' : 'btn'
+    return anchor
+  }
+
+  function row(label: string, value: string): HTMLElement {
+    const item = document.createElement('div')
+    item.className = 'meta-row'
+    const key = document.createElement('span')
+    key.className = 'meta-row__key'
+    key.textContent = label
+    const val = document.createElement('span')
+    val.className = 'meta-row__value'
+    val.textContent = value
+    item.append(key, val)
+    return item
+  }
+
+  function render(resource: Resource): void {
+    if (title) title.textContent = resource.name
+    if (lede) lede.textContent = resource.description
+
+    if (actions) {
+      const buttons: HTMLElement[] = []
+      const buy = quoteLinkFor(resource)
+      if (buy) buttons.push(link(buy, 'Get a deposit quote', true))
+      if (isHttpUrl(resource.resourceUrl)) {
+        const open = link(resource.resourceUrl, 'Open provider endpoint')
+        open.target = '_blank'
+        open.rel = 'noopener noreferrer'
+        buttons.push(open)
+      }
+      if (resource.documentationUrl && isHttpUrl(resource.documentationUrl)) {
+        const docs = link(resource.documentationUrl, 'Documentation')
+        docs.target = '_blank'
+        docs.rel = 'noopener noreferrer'
+        buttons.push(docs)
+      }
+      actions.replaceChildren(...buttons)
+      actions.hidden = buttons.length === 0
+    }
+    if (!isHttpUrl(resource.resourceUrl) && status) {
+      status.hidden = false
+      status.classList.add('error')
+      status.textContent = 'This listing has no safe http(s) endpoint, so it cannot be opened.'
+    }
+
+    if (meta) {
+      meta.replaceChildren(
+        row('Price', `${resource.price} ${resource.asset.toUpperCase()}`),
+        row('Networks', resource.networks.map(labelForNetwork).join(', ')),
+        row('Owner', shortenAddress(resource.owner, 10, 6)),
+        ...(resource.payTo ? [row('Payout address', shortenAddress(resource.payTo, 10, 6))] : []),
+        ...(resource.category ? [row('Category', resource.category)] : []),
+        ...(resource.health && resource.health !== 'unknown'
+          ? [row('Health', resource.health)]
+          : []),
+      )
+      meta.hidden = false
+    }
+    if (details) {
+      details.textContent = JSON.stringify(resource, null, 2)
+      details.hidden = false
+    }
+  }
+
+  if (!id) {
+    if (title) title.textContent = 'No service selected'
+    if (lede) lede.textContent = 'Open a result from the catalogue to see its details.'
+  } else {
+    void getResource(id)
+      .then(({ resource }) => render(resource))
+      .catch((error: unknown) => {
+        if (title) title.textContent = 'Service not found'
+        if (status) {
+          status.hidden = false
+          status.classList.add('error')
+          status.textContent = error instanceof Error ? error.message : String(error)
+        }
+      })
+  }
+</script>

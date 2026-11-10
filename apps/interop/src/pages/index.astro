@@ -1,0 +1,184 @@
+---
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (c) 2026 THE3RDWEBLABS (https://github.com/the3rdweblabs)
+// [native]
+import Layout from '../layouts/Layout.astro';
+import Icon from '../components/Icon.astro';
+import CodeBlock from '../components/CodeBlock.astro';
+import { dayOneChains } from '../lib/chains';
+
+const chains = dayOneChains();
+
+const sellerSnippet = `import { x402interop } from '@x402interop/servers/express'
+
+app.get(
+  '/api/report',
+  x402interop({
+    facilitator: process.env.FACILITATOR_URL,
+    apiKey: process.env.FACILITATOR_API_KEY,
+    payTo: process.env.SELLER_ADDRESS,
+    network: 'sui:mainnet',
+    asset: process.env.SELLER_ASSET,
+    price: '0.20',
+    amount: '200000',
+    deliveryMode: 'on_deposit',
+    mintQuotes: true,
+    buyerNetwork: 'eip155:8453',
+    buyerAsset: 'nep141:base-usdc.omft.near',
+  }),
+  (req, res) => res.json({ report: '…' }),
+)`;
+
+const buyerSnippet = `import { wrapFetchWithInterop } from '@x402interop/client'
+
+const fetchWithInterop = wrapFetchWithInterop(fetch, { spendControls: false })
+
+const res = await fetchWithInterop('https://seller.example/api/report', {
+  headers: { accept: 'application/json' },
+})
+// 1st call → 402 with PAYMENT-REQUIRED
+// wrapper signs and retries with PAYMENT-SIGNATURE
+// 2nd call → 200 with the report and PAYMENT-RESPONSE`;
+
+const facilitatorSnippet = `import { createInteropFacilitator } from '@x402interop/facilkit'
+
+// Quote, verify, settle, status and MCP over HTTP.
+// createInteropFacilitator(options) - see the facilitator guide for the options.
+const facilitator = createInteropFacilitator(options)`;
+
+const features = [
+  { icon: 'send', title: 'Pay from anywhere', text: 'Pay on your chain: the buyer signs a gasless payment on its own chain - no bridge, no extra wallet.' },
+  { icon: 'receive', title: 'Get paid on yours', text: 'Settle on your chain: the seller receives an exact amount on its own chain via NEAR Intents.' },
+  { icon: 'search', title: 'Discover anything', text: 'Find services across chains: one search across federated catalogs, exposed as MCP tools.' },
+  { icon: 'zap', title: 'Fast enough for HTTP', text: 'Tiered delivery keeps the swap off the critical path.' },
+  { icon: 'coins', title: 'Bitcoin included', text: 'BTC holders top up over Lightning and spend as stablecoin.' },
+  { icon: 'shield', title: 'No float', text: 'Facilitator never fronts liquidity: zero facilitator float - the facilitator never fronts its own money.' },
+];
+
+const starts = [
+  { role: 'Seller', title: 'Protect a route', text: 'Add the x402interop middleware, pick a delivery mode, register in discovery.', href: '/docs/guides/seller' },
+  { role: 'Buyer', title: 'Pay for a resource', text: 'Wrap fetch with an interop-aware x402 client, sign and retry.', href: '/docs/guides/buyer' },
+  { role: 'Facilitator', title: 'Run a facilitator', text: 'createInteropFacilitator - quote, verify, settle, status, MCP.', href: '/docs/guides/facilitator' },
+  { role: 'Agent', title: 'MCP & agents', text: 'search_services, prepare_payment, pay_and_fetch, payment_status, get_credit.', href: '/docs/guides/mcp' },
+];
+const description = 'Cross-chain x402 payments - pay on any chain, get paid on any chain. Settled by NEAR Intents.';
+---
+
+<Layout description={description} active="">
+  <section class="hero">
+    <div class="wrap hero__grid">
+      <div class="hero__copy reveal">
+        <p class="eyebrow">Cross-chain x402 payments</p>
+        <h1>Pay on any chain.<br /><span>Get paid on any chain.</span></h1>
+        <p class="lede">x402Interop extends upstream x402 with cross-chain payment flows, a facilitator, and a marketplace where buyers discover services and sellers publish endpoints. Cross-chain settlement runs on NEAR Intents.</p>
+        <div class="hero__ctas">
+          <a class="btn btn--primary" href="/docs/intro">Read the docs <Icon name="arrow" size={18} /></a>
+          <a class="btn btn--secondary" href="/whitepaper">Whitepaper</a>
+        </div>
+      </div>
+
+      <figure class="flow reveal" aria-label="Payment flow: buyer, facilitator, NEAR Intents, seller">
+        <div class="flow__node">
+          <strong>Buyer</strong>
+          <span>Pays on the chain it already uses</span>
+        </div>
+        <div class="flow__arrow" aria-hidden="true"></div>
+        <div class="flow__node flow__node--hub">
+          <strong>x402Interop facilitator</strong>
+          <span>Quotes; verifies on EVM; settles via 1Click</span>
+        </div>
+        <div class="flow__arrow" aria-hidden="true"></div>
+        <div class="flow__node">
+          <strong>NEAR Intents</strong>
+          <span>Cross-chain settlement</span>
+        </div>
+        <div class="flow__arrow" aria-hidden="true"></div>
+        <div class="flow__node">
+          <strong>Seller</strong>
+          <span>Paid on the chain it already uses</span>
+        </div>
+        <figcaption class="flow__legend">Buyer → facilitator → NEAR Intents → seller</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="section section--tight">
+    <div class="wrap">
+      <div class="section__head reveal">
+        <p class="eyebrow">Two lines to start</p>
+        <h2>Protect a route. Pay from anywhere.</h2>
+        <p>The same x402 flow from both sides. Snippets are taken from the quickstart and the API reference.</p>
+      </div>
+      <div class="tabs reveal" data-tabs>
+        <div class="tabs__list" role="tablist" aria-label="Code samples">
+          <button class="tabs__tab" role="tab" id="tab-seller" aria-controls="panel-seller" aria-selected="true" type="button">Seller middleware</button>
+          <button class="tabs__tab" role="tab" id="tab-buyer" aria-controls="panel-buyer" aria-selected="false" tabindex="-1" type="button">Buyer client</button>
+          <button class="tabs__tab" role="tab" id="tab-facilitator" aria-controls="panel-facilitator" aria-selected="false" tabindex="-1" type="button">Facilitator</button>
+        </div>
+        <div class="tabs__panel" role="tabpanel" id="panel-seller" aria-labelledby="tab-seller">
+          <CodeBlock code={sellerSnippet} lang="ts" label="@x402interop/servers" />
+        </div>
+        <div class="tabs__panel" role="tabpanel" id="panel-buyer" aria-labelledby="tab-buyer" hidden>
+          <CodeBlock code={buyerSnippet} lang="ts" label="@x402interop/client" />
+        </div>
+        <div class="tabs__panel" role="tabpanel" id="panel-facilitator" aria-labelledby="tab-facilitator" hidden>
+          <CodeBlock code={facilitatorSnippet} lang="ts" label="@x402interop/facilkit" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section__head reveal">
+        <p class="eyebrow">What it does</p>
+        <h2>An open-source cross-chain facilitator, scheme family, and discovery layer for x402.</h2>
+      </div>
+      <ul class="grid grid--3">
+        {features.map((feature) => (
+          <li class="card reveal">
+            <span class="card__icon"><Icon name={feature.icon} size={20} /></span>
+            <h3>{feature.title}</h3>
+            <p>{feature.text}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section__head reveal">
+        <p class="eyebrow">Start here</p>
+        <h2>Choose your path into the docs.</h2>
+      </div>
+      <ul class="grid grid--4">
+        {starts.map((start) => (
+          <li class="reveal">
+            <a class="card card--link" href={start.href}>
+              <p class="eyebrow">{start.role}</p>
+              <h3>{start.title}</h3>
+              <p>{start.text}</p>
+              <span class="card__go">Read the guide <Icon name="arrow" size={16} /></span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section section--tight">
+    <div class="wrap">
+      <div class="section__head reveal">
+        <p class="eyebrow">Supported chains</p>
+        <p>Day-one chains from the chain reference. Settlement runs on NEAR Intents.</p>
+      </div>
+      <ul class="chips reveal" aria-label="Supported chains">
+        {chains.map((chain) => <li>{chain}</li>)}
+      </ul>
+      <p class="muted reveal chains-link">
+        <a href="/docs/reference/chains-and-assets">Full network matrix and assets</a>
+      </p>
+    </div>
+  </section>
+</Layout>

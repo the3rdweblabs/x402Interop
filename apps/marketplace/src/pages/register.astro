@@ -1,0 +1,298 @@
+---
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (c) 2026 THE3RDWEBLABS (https://github.com/the3rdweblabs)
+// [native]
+import Layout from '../layouts/Layout.astro'
+---
+
+<Layout title="Register" description="List a service on the marketplace, signed by your wallet." active="register">
+  <section class="phero">
+    <div class="phero__inner">
+      <h1 id="register-title">List a service.</h1>
+      <p class="phero__lede">
+        Your connected wallet owns the listing. Each save asks your wallet to sign the change. Listings are free for now.
+      </p>
+    </div>
+  </section>
+  <section>
+      <p id="fee-summary" class="muted">Loading listing fee options…</p>
+      <p id="owner-line" class="muted" hidden></p>
+      <form id="register-form" class="form-panel">
+        <div>
+          <label for="name">Service name</label>
+          <input id="name" name="name" required />
+        </div>
+        <div>
+          <label for="resourceUrl">Resource URL</label>
+          <input id="resourceUrl" name="resourceUrl" type="url" placeholder="https://api.example.com/weather" required />
+        </div>
+        <div>
+          <label for="price">Price</label>
+          <input id="price" name="price" inputmode="decimal" required />
+        </div>
+        <div>
+          <label for="asset">Asset</label>
+          <select id="asset" name="asset" required>
+            <option value="">Enter a network first</option>
+          </select>
+          <p id="asset-hint" class="muted">
+            On-chain asset for the network above. The symbol is the label; the listing stores the asset id.
+          </p>
+        </div>
+        <div>
+          <label for="networks">Networks</label>
+          <input id="networks" name="networks" placeholder="eip155:8453, sui:mainnet" required />
+        </div>
+        <div class="wide">
+          <label for="payTo">Payout address (payTo)</label>
+          <input id="payTo" name="payTo" placeholder="Bare address on the network above, for example 0x…" />
+          <p id="payTo-hint" class="muted">
+            Where you are paid. Must be a valid address on every network you list.
+            This is separate from the wallet that owns the listing.
+          </p>
+        </div>
+        <div>
+          <label for="category">Category</label>
+          <input id="category" name="category" />
+        </div>
+        <div>
+          <label for="documentationUrl">Documentation URL</label>
+          <input id="documentationUrl" name="documentationUrl" type="url" />
+        </div>
+        <div class="wide">
+          <label for="description">Description</label>
+          <textarea id="description" name="description" required></textarea>
+        </div>
+        <details class="wide">
+          <summary>Listing fee (only when the marketplace charges one)</summary>
+          <div>
+            <label for="paymentNetwork">Fee network</label>
+            <input id="paymentNetwork" name="paymentNetwork" placeholder="eip155:8453" />
+          </div>
+          <div>
+            <label for="paymentAsset">Fee asset</label>
+            <input id="paymentAsset" name="paymentAsset" />
+          </div>
+          <div class="wide">
+            <label for="paymentSignature">x402 payment signature</label>
+            <input id="paymentSignature" name="paymentSignature" />
+          </div>
+        </details>
+        <div class="wide">
+          <button type="submit" id="register-submit">Connect a wallet to continue</button>
+        </div>
+      </form>
+      <pre id="register-result">Connect a wallet, then submit.</pre>
+  </section>
+</Layout>
+
+<script>
+  import { ASSETS } from '@x402interop/core'
+  import { fetchMarketplaceFees, getResource, registerResource, updateResource } from '../lib/marketplace'
+  import { labelForNetwork } from '../lib/network-labels'
+  import { signAction, ownerIdOf } from '../lib/wallet'
+  import { connectedWallet, ensureWallet, onWalletChange } from '../lib/wallet-ui'
+  import { addressError } from '../lib/validate'
+
+  const form = document.getElementById('register-form') as HTMLFormElement | null
+  const result = document.getElementById('register-result')
+  const feeSummary = document.getElementById('fee-summary')
+  const ownerLine = document.getElementById('owner-line')
+  const submit = document.getElementById('register-submit') as HTMLButtonElement | null
+  const title = document.getElementById('register-title')
+  const editId = new URLSearchParams(window.location.search).get('id')
+  const networksField = document.getElementById('networks') as HTMLInputElement | null
+  const assetField = document.getElementById('asset') as HTMLSelectElement | null
+
+  function listedNetworks(): string[] {
+    return (networksField?.value ?? '')
+      .split(',')
+      .map((item) => item.trim())
+      .filter(Boolean)
+  }
+
+  /** Rebuild the asset list from the networks the seller typed. */
+  function refreshAssets(preferred?: string): void {
+    if (!assetField) return
+    const networks = listedNetworks()
+    const choices = ASSETS.filter((asset) => networks.includes(asset.network))
+    const keep = preferred ?? assetField.value
+    assetField.replaceChildren()
+    const placeholder = document.createElement('option')
+    placeholder.value = ''
+    placeholder.textContent = networks.length === 0 ? 'Enter a network first' : 'Choose an asset'
+    assetField.append(placeholder)
+    for (const asset of choices) {
+      const option = document.createElement('option')
+      option.value = asset.asset
+      option.textContent =
+        networks.length > 1
+          ? `${asset.symbol} on ${labelForNetwork(asset.network)}`
+          : asset.symbol
+      assetField.append(option)
+    }
+    const match = choices.find((asset) => asset.asset === keep || asset.symbol.toLowerCase() === keep.toLowerCase())
+    if (match) assetField.value = match.asset
+    else if (choices.length > 0) {
+      const stable = choices.find((asset) => asset.stablecoin) ?? choices[0]
+      assetField.value = stable?.asset ?? ''
+    }
+    assetField.disabled = choices.length === 0
+  }
+
+  networksField?.addEventListener('input', () => refreshAssets())
+  refreshAssets()
+
+  void fetchMarketplaceFees()
+    .then((fees) => {
+      if (feeSummary) {
+        feeSummary.textContent = fees.free
+          ? 'Listing is free.'
+          : `Registration fee options: ${fees.registration.map((fee) => `${fee.amount} ${fee.symbol ?? fee.asset} on ${fee.network}`).join(' · ')}`
+      }
+    })
+    .catch((error) => {
+      if (feeSummary) feeSummary.textContent = error instanceof Error ? error.message : String(error)
+    })
+
+  if (editId && title) {
+    title.textContent = 'Edit your listing.'
+    void getResource(editId)
+      .then(({ resource }) => {
+        const set = (name: string, value: string) => {
+          const field = form?.elements.namedItem(name) as HTMLInputElement | HTMLTextAreaElement | null
+          if (field) field.value = value
+        }
+        set('name', resource.name)
+        set('resourceUrl', resource.resourceUrl)
+        set('price', resource.price)
+        set('asset', resource.asset)
+        set('payTo', resource.payTo ?? '')
+        set('networks', resource.networks.join(', '))
+        refreshAssets(resource.asset)
+        set('category', resource.category ?? '')
+        set('documentationUrl', resource.documentationUrl ?? '')
+        set('description', resource.description)
+      })
+      .catch((error) => {
+        if (result) {
+          result.classList.add('error')
+          result.textContent = error instanceof Error ? error.message : String(error)
+        }
+      })
+  }
+
+  function refreshButton(): void {
+    const wallet = connectedWallet()
+    if (submit) {
+      submit.textContent = wallet
+        ? editId
+          ? 'Save changes'
+          : 'Sign and list'
+        : 'Connect a wallet to continue'
+    }
+    if (ownerLine) {
+      ownerLine.hidden = !wallet
+      if (wallet) ownerLine.textContent = `Listed by ${wallet.name} · ${ownerIdOf(wallet)}`
+    }
+    prefillPayTo(wallet)
+  }
+  onWalletChange(refreshButton)
+
+  /**
+   * Offers the connected address as a payout address only when the wallet's own
+   * network is among those listed. It is a visible, editable suggestion: it
+   * never fires on a family mismatch, and it never overwrites a typed value.
+   */
+  function prefillPayTo(wallet: ReturnType<typeof connectedWallet>): void {
+    const payToField = document.getElementById('payTo') as HTMLInputElement | null
+    const networksField = document.getElementById('networks') as HTMLInputElement | null
+    const hint = document.getElementById('payTo-hint')
+    if (!payToField || !networksField) return
+    const networks = networksField.value
+      .split(',')
+      .map((item) => item.trim())
+      .filter(Boolean)
+    const familyOf = (network: string) => network.split(':')[0]
+    const walletFamily = wallet?.family === 'solana' ? 'solana' : wallet?.family
+    const matches = wallet !== undefined && networks.some((n) => familyOf(n) === walletFamily)
+
+    if (wallet && !matches && networks.length > 0) {
+      if (hint) {
+        hint.textContent = `Your connected wallet is ${wallet.name} on ${wallet.networks[0] ?? wallet.family}. This listing settles on ${networks.join(', ')}, so enter a payout address for that chain.`
+      }
+      return
+    }
+    if (hint) {
+      hint.textContent =
+        'Where you are paid. Must be a valid address on every network you list. This is separate from the wallet that owns the listing.'
+    }
+    if (matches && wallet && payToField.value.trim() === '') {
+      payToField.value = wallet.address
+    }
+  }
+
+  form?.addEventListener('submit', (event) => {
+    event.preventDefault()
+    void (async () => {
+      if (!result) return
+      try {
+        const wallet = await ensureWallet()
+        const data = new FormData(form)
+        const text = (name: string) => String(data.get(name) ?? '').trim()
+        const input = {
+          name: text('name'),
+          resourceUrl: text('resourceUrl'),
+          price: text('price'),
+          asset: text('asset'),
+          networks: text('networks')
+            .split(',')
+            .map((item) => item.trim())
+            .filter(Boolean),
+          payTo: text('payTo') || undefined,
+          category: text('category') || undefined,
+          documentationUrl: text('documentationUrl') || undefined,
+          description: text('description'),
+          paymentNetwork: text('paymentNetwork') || undefined,
+          paymentAsset: text('paymentAsset') || undefined,
+        }
+        // A payout address is required, and it must be valid on every listed
+        // network. Never substitute the connected wallet's address silently.
+        if (!input.asset) {
+          throw new Error('Choose an asset for the network you list.')
+        }
+        const knownAsset = ASSETS.some(
+          (asset) => input.networks.includes(asset.network) && asset.asset === input.asset,
+        )
+        if (!knownAsset) {
+          throw new Error('That asset is not valid on the networks you listed.')
+        }
+        if (!input.payTo) {
+          throw new Error('Add a payout address (payTo) for the network you list.')
+        }
+        const payToProblem = input.networks
+          .map((network) => addressError(network, input.payTo as string))
+          .find((problem) => problem !== undefined)
+        if (payToProblem) throw new Error(payToProblem)
+        const paymentSignature = text('paymentSignature') || undefined
+        if (editId) {
+          const path = `/discovery/resources/${encodeURIComponent(editId)}`
+          const signature = await signAction(wallet, 'PATCH', path, input)
+          const response = await updateResource(editId, input, undefined, { signature })
+          result.classList.remove('error')
+          result.textContent = JSON.stringify(response, null, 2)
+          return
+        }
+        const signature = await signAction(wallet, 'POST', '/discovery/resources', input)
+        const response = await registerResource(input, undefined, { signature, paymentSignature })
+        result.classList.remove('error')
+        result.textContent = JSON.stringify(response, null, 2)
+      } catch (error) {
+        result.classList.add('error')
+        result.textContent = error instanceof Error ? error.message : String(error)
+      }
+    })()
+  })
+
+  refreshButton()
+</script>

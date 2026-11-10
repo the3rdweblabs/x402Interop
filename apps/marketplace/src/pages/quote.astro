@@ -1,0 +1,218 @@
+---
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (c) 2026 THE3RDWEBLABS (https://github.com/the3rdweblabs)
+// [native]
+import { ALL_NETWORKS } from '@x402interop/core'
+import Layout from '../layouts/Layout.astro'
+import { labelForNetwork } from '../lib/network-labels'
+
+const DEFAULT_NETWORK = 'eip155:8453'
+---
+
+<Layout title="Quote" description="Get a deposit quote for a listing." active="quote">
+  <section class="phero">
+    <div class="phero__inner">
+      <h1>Get a deposit quote.</h1>
+      <p class="phero__lede">
+        A quote gives you one deposit address, an exact amount, and an expiry. Send the amount to
+        that address before it expires. Each quote can be paid once.
+      </p>
+    </div>
+  </section>
+  <section>
+    <form id="quote-form" class="form-panel">
+      <div>
+        <label for="sellerNetwork">Seller network</label>
+        <select id="sellerNetwork" name="sellerNetwork" required>
+          {
+            ALL_NETWORKS.map((network) => (
+              <option value={network} selected={network === DEFAULT_NETWORK}>
+                {labelForNetwork(network)} · {network}
+              </option>
+            ))
+          }
+        </select>
+      </div>
+      <div>
+        <label for="sellerAsset">Seller asset</label>
+        <input id="sellerAsset" name="sellerAsset" type="text" value="usdc" required />
+      </div>
+      <div>
+        <label for="sellerAddress">Seller address</label>
+        <input id="sellerAddress" name="sellerAddress" type="text" placeholder="Where the seller is paid" required />
+      </div>
+      <div>
+        <label for="amount">Amount</label>
+        <input id="amount" name="amount" type="text" inputmode="numeric" value="50000" required />
+        <span class="hint">Atomic units. 50000 is 0.05 USDC (6 decimals).</span>
+      </div>
+      <div>
+        <label for="buyerNetwork">Your network</label>
+        <select id="buyerNetwork" name="buyerNetwork" required>
+          {
+            ALL_NETWORKS.map((network) => (
+              <option value={network} selected={network === DEFAULT_NETWORK}>
+                {labelForNetwork(network)} · {network}
+              </option>
+            ))
+          }
+        </select>
+        <span class="hint">The chain you pay from.</span>
+      </div>
+      <div>
+        <label for="buyerAsset">Your asset</label>
+        <input id="buyerAsset" name="buyerAsset" type="text" value="usdc" required />
+      </div>
+      <div class="wide">
+        <label for="buyerAddress">Your refund address</label>
+        <input id="buyerAddress" name="buyerAddress" type="text" placeholder="Your address on your network" required />
+        <span class="hint">If the payment cannot complete, funds are returned here.</span>
+      </div>
+      <div class="wide">
+        <label for="deliveryMode">Delivery</label>
+        <select id="deliveryMode" name="deliveryMode" required>
+          <option value="on_deposit" selected>On deposit: the seller is credited as soon as the deposit is seen</option>
+          <option value="on_success">On success: the seller is credited after settlement</option>
+          <option value="pending_push">Pending push: the seller collects manually</option>
+        </select>
+      </div>
+      <div class="wide actions">
+        <button type="submit">Get a deposit quote</button>
+      </div>
+    </form>
+
+    <p id="quote-error" class="error" hidden></p>
+
+    <div id="quote-summary" class="panel" hidden>
+      <h2>Send your payment</h2>
+      <div class="meta-row">
+        <span class="meta-row__key">Deposit address</span>
+        <span class="meta-row__value" id="quote-deposit"></span>
+      </div>
+      <div class="meta-row">
+        <span class="meta-row__key">Amount</span>
+        <span class="meta-row__value" id="quote-amount"></span>
+      </div>
+      <div class="meta-row">
+        <span class="meta-row__key">Expires</span>
+        <span class="meta-row__value" id="quote-expires"></span>
+      </div>
+      <div class="meta-row">
+        <span class="meta-row__key">Quote ID</span>
+        <span class="meta-row__value" id="quote-id"></span>
+      </div>
+      <div class="actions">
+        <button type="button" id="quote-copy">Copy deposit address</button>
+      </div>
+      <p id="quote-status" class="status"></p>
+    </div>
+
+    <details id="quote-raw" hidden>
+      <summary>Raw response</summary>
+      <pre id="quote-result"></pre>
+    </details>
+  </section>
+</Layout>
+
+<script>
+  import { facilitatorUrl, requestQuote } from '../lib/facilitator'
+  import type { QuoteInput, QuoteResult } from '../lib/facilitator'
+  import { addressError, atomicAmountError } from '../lib/validate'
+  import { describeQuoteState, watchQuote } from '../lib/quote-status'
+
+  const form = document.getElementById('quote-form') as HTMLFormElement | null
+  const errorLine = document.getElementById('quote-error')
+  const summary = document.getElementById('quote-summary')
+  const raw = document.getElementById('quote-raw') as HTMLDetailsElement | null
+  const rawOutput = document.getElementById('quote-result')
+  const statusLine = document.getElementById('quote-status')
+  let stopWatching: (() => void) | undefined
+
+  function showError(message: string): void {
+    if (summary) summary.hidden = true
+    if (raw) raw.hidden = true
+    if (errorLine) {
+      errorLine.hidden = false
+      errorLine.textContent = message
+    }
+  }
+
+  function showQuote(quote: QuoteResult): void {
+    if (errorLine) errorLine.hidden = true
+    const set = (id: string, value: string) => {
+      const node = document.getElementById(id)
+      if (node) node.textContent = value
+    }
+    set('quote-deposit', quote.depositAddress)
+    set('quote-amount', `${quote.originAmount} (${quote.originAsset.toUpperCase()} on ${quote.originNetwork})`)
+    set('quote-expires', new Date(quote.expiresAt).toLocaleString())
+    set('quote-id', quote.quoteId)
+    if (summary) summary.hidden = false
+    if (rawOutput) rawOutput.textContent = JSON.stringify(quote, null, 2)
+    if (raw) raw.hidden = false
+    if (statusLine) {
+      statusLine.className = 'status'
+      statusLine.textContent = 'Waiting for your deposit.'
+    }
+    stopWatching?.()
+    if (statusLine) {
+      stopWatching = watchQuote(quote.quoteId, (update) => {
+        if ('error' in update) {
+          statusLine.classList.add('error')
+          statusLine.textContent = `Status check failed (${update.error}). Retrying…`
+          return
+        }
+        statusLine.classList.remove('error')
+        statusLine.textContent = describeQuoteState(update.state)
+      })
+    }
+  }
+
+  document.getElementById('quote-copy')?.addEventListener('click', () => {
+    const address = document.getElementById('quote-deposit')?.textContent ?? ''
+    if (!address) return
+    void navigator.clipboard?.writeText(address)
+    const button = document.getElementById('quote-copy')
+    if (button) button.textContent = 'Copied'
+  })
+
+  if (form) {
+    const prefill = new URLSearchParams(window.location.search)
+    for (const name of ['sellerNetwork', 'sellerAsset', 'sellerAddress', 'amount']) {
+      const value = prefill.get(name)
+      const field = form.elements.namedItem(name) as HTMLInputElement | HTMLSelectElement | null
+      if (value && field) field.value = value
+    }
+    form.addEventListener('submit', (event) => {
+      event.preventDefault()
+      const data = new FormData(form)
+      const input: QuoteInput = {
+        sellerNetwork: String(data.get('sellerNetwork')),
+        sellerAsset: String(data.get('sellerAsset')),
+        sellerAddress: String(data.get('sellerAddress')).trim(),
+        amount: String(data.get('amount')).trim(),
+        buyerNetwork: String(data.get('buyerNetwork')),
+        buyerAsset: String(data.get('buyerAsset')),
+        buyerAddress: String(data.get('buyerAddress')).trim(),
+        deliveryMode: String(data.get('deliveryMode')) as QuoteInput['deliveryMode'],
+      }
+      const problem =
+        atomicAmountError(input.amount) ??
+        addressError(input.sellerNetwork, input.sellerAddress) ??
+        addressError(input.buyerNetwork, input.buyerAddress)
+      if (problem) {
+        showError(problem)
+        return
+      }
+      void (async () => {
+        try {
+          showQuote(await requestQuote(input))
+        } catch (error) {
+          showError(
+            `Quote request failed at ${facilitatorUrl()}: ${error instanceof Error ? error.message : String(error)}`,
+          )
+        }
+      })()
+    })
+  }
+</script>

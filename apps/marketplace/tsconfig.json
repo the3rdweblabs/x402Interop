@@ -1,0 +1,12 @@
+{
+  "extends": "astro/tsconfigs/base",
+  "include": [".astro/types.d.ts", "src"],
+  "exclude": ["dist", "node_modules", "test"],
+  "compilerOptions": {
+    "types": ["node", "astro/client"],
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "verbatimModuleSyntax": true,
+    "skipLibCheck": true
+  }
+}

@@ -1,0 +1,38 @@
+---
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (c) 2026 THE3RDWEBLABS (https://github.com/the3rdweblabs)
+// [native]
+import Layout from '../layouts/Layout.astro';
+import Icon from '../components/Icon.astro';
+
+const MARKETPLACE_URL = import.meta.env.PUBLIC_MARKETPLACE_URL ?? 'http://127.0.0.1:4321/';
+const items = [
+  { title: 'Facilitator', text: 'Quote, verify, and settle over HTTP.', href: '/docs/guides/facilitator' },
+  { title: 'Marketplace', text: 'Search services and mint a deposit quote.', href: MARKETPLACE_URL },
+  { title: 'Buyer', text: 'Sign the quote on the chain the buyer already uses.', href: '/docs/guides/buyer' },
+  { title: 'Seller', text: 'Protect a route and name the chain you want to be paid on.', href: '/docs/guides/seller' },
+];
+---
+
+<Layout title="Products" description="Facilitator, marketplace, buyer, and seller." active="">
+  <section class="section">
+    <div class="wrap">
+      <div class="section__head">
+        <p class="eyebrow">Products</p>
+        <h1>What you run</h1>
+        <p>Four surfaces. No extra chain, and no facilitator float.</p>
+      </div>
+      <ul class="grid grid--2">
+        {items.map((item) => (
+          <li>
+            <a class="card card--link" href={item.href}>
+              <h3>{item.title}</h3>
+              <p>{item.text}</p>
+              <span class="card__go">Open <Icon name="arrow" size={16} /></span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</Layout>

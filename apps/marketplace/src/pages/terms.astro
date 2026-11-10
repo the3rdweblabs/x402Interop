@@ -1,0 +1,172 @@
+---
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (c) 2026 THE3RDWEBLABS (https://github.com/the3rdweblabs)
+// [native]
+import Layout from '../layouts/Layout.astro'
+---
+
+<Layout title="Terms" description="Terms of use for the x402Interop marketplace." active="">
+  <section class="phero">
+    <div class="phero__inner">
+      <h1>Terms of use.</h1>
+      <p class="phero__lede">DRAFT for legal review.</p>
+    </div>
+  </section>
+  <section class="legal">
+    <dl class="legal__facts">
+      <div>
+        <dt>Last updated</dt>
+        <dd>10 November 2026</dd>
+      </div>
+      <div>
+        <dt>Operator</dt>
+        <dd>THE3RDWEBLABS</dd>
+      </div>
+      <div>
+        <dt>Covers</dt>
+        <dd>The x402Interop marketplace, including search, quotes, and listing management.</dd>
+      </div>
+      <div>
+        <dt>Questions</dt>
+        <dd>
+          <a href="https://github.com/the3rdweblabs/x402Interop">GitHub</a>
+          {' · '}
+          <a href="https://t.me/the3rdweblabs">Telegram</a>
+        </dd>
+      </div>
+    </dl>
+
+    <h2>1. Who these terms cover</h2>
+    <p>
+      These terms cover anyone who opens the marketplace. That includes someone browsing the
+      catalogue, someone asking for a deposit quote, and someone who connects a wallet to list,
+      edit, or remove a service. If you use the marketplace, you agree to this draft as it stands
+      on the date above. The <a href="/privacy">privacy notice</a> explains what information the
+      marketplace handles.
+    </p>
+
+    <h2>2. What the marketplace is</h2>
+    <p>
+      The marketplace is a directory. Sellers describe a service, a price, the networks they
+      accept, and the address where they want to be paid. Buyers can search that directory and
+      ask the facilitator for a deposit quote.
+    </p>
+    <p>
+      THE3RDWEBLABS operates the directory and the facilitator. It does not sell the listed
+      services, and it is not a party to a sale between a buyer and a seller. A listing is an
+      offer from its owner. The endpoint behind a listing is run by that owner, or by whoever
+      they point it at.
+    </p>
+
+    <h2>3. Wallets</h2>
+    <p>
+      Some actions need a wallet you control. Connecting a wallet shows its public address in the
+      page. It does not give the marketplace your seed phrase or private key, and you should
+      never type those into this site or send them to the operator.
+    </p>
+    <p>
+      You are responsible for the wallet you connect, for the device it is on, and for every
+      message or transaction you approve in it. If you lose access to the wallet that owns a
+      listing, the marketplace cannot recover that listing for a different address.
+    </p>
+
+    <h2>4. Listings</h2>
+    <p>
+      If you list a service, you are responsible for the name, the description, the price, the
+      networks, the payout address, and the endpoint. Those details should be accurate, and the
+      endpoint should be one you are allowed to offer. Listings are free for now. If a listing
+      fee is introduced, the amount and the asset will be shown before you are asked to pay it,
+      and this page will be updated.
+    </p>
+    <p>Do not list a service that:</p>
+    <ul>
+      <li>breaks the law where you offer it or where the buyer is likely to use it;</li>
+      <li>facilitates fraud, phishing, malware, or unauthorised access;</li>
+      <li>infringes someone else's intellectual property or other rights;</li>
+      <li>exploits or sexualises a minor;</li>
+      <li>impersonates another person, project, or operator.</li>
+    </ul>
+    <p>
+      The operator may refuse, hide, or remove a listing, and may stop an address from writing
+      listings, when a listing breaks these rules or when a valid takedown notice arrives. Removing
+      a listing from the directory does not reverse a payment that has already settled.
+    </p>
+
+    <h2>5. Quotes and payments</h2>
+    <p>
+      A deposit quote names one deposit address, one amount, and an expiry. It can be paid once.
+      You send that amount from your own wallet to the deposit address before it expires. The
+      payment moves on the networks named in the quote. The operator does not hold buyer funds
+      for a listing and does not custody a seller's payout.
+    </p>
+    <p>
+      A chain transfer is generally irreversible. The operator cannot reverse, refund, or cancel
+      a payment that has been sent. A disagreement about whether a service was delivered, and any
+      refund of that service, is between the buyer and the seller.
+    </p>
+
+    <h2>6. Signatures</h2>
+    <p>
+      Creating, editing, or removing a listing asks your wallet to sign a message. The message is
+      tied to that one action and to a single-use challenge that expires after five minutes. The
+      signature proves you control the address that owns the listing. It is not a transaction, and
+      it does not authorise a transfer of funds. Read the message in your wallet before you sign it.
+    </p>
+
+    <h2>7. Services you do not operate</h2>
+    <p>
+      A listing points at an endpoint the marketplace does not run. Wallets, chain networks, and
+      the cross-chain settlement path (NEAR Intents and 1Click) are separate services. Each has
+      its own terms, its own availability, and its own risks. The marketplace does not promise
+      that an endpoint will stay up, that a quote will still be fillable when you return to it,
+      or that a third-party wallet or network will behave as you expect.
+    </p>
+
+    <h2>8. Acceptable use</h2>
+    <p>Do not:</p>
+    <ul>
+      <li>forge a signature, reuse a challenge, or present an address you do not control;</li>
+      <li>probe, overload, or disrupt the marketplace or the facilitator;</li>
+      <li>scrape the catalogue in a way that degrades it for other people;</li>
+      <li>use the marketplace to send people to a harmful or deceptive endpoint.</li>
+    </ul>
+
+    <h2>9. The site and your content</h2>
+    <p>
+      The marketplace software is published under the licence in the project repository. Text,
+      names, and endpoints you submit in a listing stay yours. You give the operator permission
+      to store that listing, show it in the catalogue, and remove it under these terms. That
+      permission ends when the listing is removed, except for copies kept as part of a security
+      log or a legal hold.
+    </p>
+
+    <h2>10. Availability and liability</h2>
+    <p>
+      The marketplace is provided as it is and as it is available. It can be interrupted for
+      maintenance, a fault, or a dependency the operator does not control. To the fullest extent
+      the law allows, the operator disclaims warranties of availability, fitness for a particular
+      purpose, and non-infringement, and is not liable for indirect or consequential loss, for
+      funds sent on a blockchain, or for what a buyer or a seller does.
+    </p>
+    <p>
+      Nothing in these terms limits liability that the law does not allow to be limited, including
+      liability for fraud, or for death or personal injury caused by negligence. The approved
+      version of these terms will name any further cap that applies.
+    </p>
+
+    <h2>11. Changes, suspension, and the end of the service</h2>
+    <p>
+      The operator may update these terms, suspend the marketplace, or stop it. A change that
+      affects how you list or pay will be posted on this page with a new date. If you keep using
+      the marketplace after that date, you are using it under the updated terms. If the service
+      stops, listings may no longer be shown. Payments that have already settled on a chain are
+      not undone by the site going offline.
+    </p>
+
+    <h2>12. Governing law</h2>
+    <p>
+      The approved version of these terms will name the governing law and the courts that can
+      hear a dispute. Until that version is published, these terms are a draft for review.
+    </p>
+  </section>
+</Layout>

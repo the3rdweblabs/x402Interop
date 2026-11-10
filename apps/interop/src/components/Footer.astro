@@ -1,0 +1,54 @@
+---
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (c) 2026 THE3RDWEBLABS (https://github.com/the3rdweblabs)
+// [native]
+import { DOC_SECTIONS } from '../lib/docs-nav';
+
+const pick = (sectionId: string, slugs: string[]) => {
+  const section = DOC_SECTIONS.find((item) => item.id === sectionId);
+  return slugs.flatMap((slug) => section?.entries.filter((entry) => entry.slug === slug) ?? []);
+};
+const columns = [
+  { label: 'Docs', items: pick('start', ['intro', 'guides/quickstart', 'guides/walkthrough']) },
+  {
+    label: 'Guides',
+    items: pick('guides', ['guides/seller', 'guides/buyer', 'guides/facilitator', 'guides/mcp']),
+  },
+  {
+    label: 'Reference',
+    items: pick('reference', ['reference/api', 'reference/chains-and-assets', 'reference/security']),
+  },
+  { label: 'Specs', items: pick('specs', ['specs/scheme', 'specs/facilitator-api']) },
+];
+const year = new Date().getFullYear();
+---
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer__cols">
+      <div class="footer__intro">
+        <img src="/brand/the3rdweblabs-lockup-compact-white.svg" alt="the3rdweblabs" width="207" height="40" loading="lazy" />
+        <p>Open payment infrastructure for the agent economy.</p>
+        <p class="footer__slogan">WE KEEP SHIPPING</p>
+      </div>
+      {columns.map((column) => (
+        <div class="footer__col">
+          <h3>{column.label}</h3>
+          <ul>
+            {column.items.map((item) => (
+              <li><a href={`/docs/${item.slug}`}>{item.title}</a></li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+    <div class="footer__base">
+      <p>Copyright ©{year} x402Interop. Built in the open · AGPL-3.0-or-later</p>
+      <nav aria-label="Footer">
+        <a href="https://github.com/the3rdweblabs/x402Interop" target="_blank" rel="noopener">GitHub</a>
+        <a href="/whitepaper">Whitepaper</a>
+        <span>Cross-chain x402 payments settled by NEAR Intents.</span>
+      </nav>
+    </div>
+    <p class="footer__wordmark" aria-hidden="true">x402Interop</p>
+  </div>
+</footer>

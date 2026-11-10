@@ -1,0 +1,31 @@
+---
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (c) 2026 THE3RDWEBLABS (https://github.com/the3rdweblabs)
+// [native]
+import Layout from '../layouts/Layout.astro';
+import Icon from '../components/Icon.astro';
+
+const pdf = '/x402interop-whitepaper.pdf';
+---
+
+<Layout title="Whitepaper" description="Download the x402Interop whitepaper." active="">
+  <section class="section section--tight">
+    <div class="wrap">
+      <div class="section__head">
+        <p class="eyebrow">Whitepaper</p>
+        <h1>x402Interop whitepaper.</h1>
+        <p>How a buyer pays on one chain and a seller is paid on another. Settlement runs through NEAR Intents.</p>
+      </div>
+      <div class="actions">
+        <a class="btn btn--primary" href={pdf}>Download PDF <Icon name="arrow" size={18} /></a>
+      </div>
+    </div>
+  </section>
+  <section class="section section--tight">
+    <div class="wrap">
+      <object class="pdf-frame" data={pdf} type="application/pdf" aria-label="x402Interop whitepaper">
+        <p>Your browser cannot show the PDF here. <a href={pdf}>Download the whitepaper</a>.</p>
+      </object>
+    </div>
+  </section>
+</Layout>

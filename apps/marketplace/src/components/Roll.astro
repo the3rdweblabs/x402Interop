@@ -1,0 +1,11 @@
+---
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (c) 2026 THE3RDWEBLABS (https://github.com/the3rdweblabs)
+// [native]
+interface Props { text: string }
+const { text } = Astro.props
+---
+<span class="roll">
+  <span class="roll__a">{text}</span>
+  <span class="roll__b" aria-hidden="true">{text}</span>
+</span>

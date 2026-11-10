@@ -1,0 +1,116 @@
+---
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (c) 2026 THE3RDWEBLABS (https://github.com/the3rdweblabs)
+// [native]
+import '../styles/global.css'
+
+interface Props {
+  title?: string
+  description?: string
+  active?: string
+}
+const { title, description = 'Search services on the local facilitator.', active } = Astro.props
+const docs = (import.meta.env.PUBLIC_DOCS_URL ?? 'http://127.0.0.1:4322').replace(/\/+$/, '')
+const links = [
+  { key: 'discover', text: 'Discover', href: '/' },
+  { key: 'quote', text: 'Quote', href: '/quote' },
+  { key: 'register', text: 'List a service', href: '/register' },
+  { key: 'listings', text: 'My listings', href: '/listings' },
+  { key: 'docs', text: 'Docs', href: `${docs}/docs/intro` },
+]
+const year = new Date().getFullYear()
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title ? `${title} · x402Interop Marketplace` : 'x402Interop Marketplace'}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#0a0a0b" />
+    <link rel="icon" href="/brand/favicon.svg" type="image/svg+xml" />
+    <link rel="preload" href="/fonts/outfit-var.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="nav">
+      <div class="nav__bar">
+        <a class="nav__brand" href="/" aria-label="x402Interop marketplace">
+          <img class="nav__lockup" src="/brand/the3rdweblabs-lockup-compact-white.svg" alt="" width="227" height="36" />
+        </a>
+        <button class="nav__wallet" id="wallet-button" type="button">Connect wallet</button>
+        <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="nav-panel" aria-label="Open menu">
+          <span class="nav__bars" aria-hidden="true"></span>
+        </button>
+        <nav class="nav__links" id="nav-panel" aria-label="Primary">
+          {
+            links.map((link) => (
+              <a class="nav__link" href={link.href} aria-current={link.key === active ? 'page' : undefined}>
+                {link.text}
+              </a>
+            ))
+          }
+        </nav>
+      </div>
+    </header>
+    <main id="main">
+      <div class="page-block"><slot /></div>
+    </main>
+    <footer class="foot">
+      <div class="foot__panel">
+        <p>Copyright ©{year} x402Interop.</p>
+        <p><a href="/terms">Terms</a> · <a href="/privacy">Privacy</a> · <a href="/llms.txt">llms.txt</a></p>
+      </div>
+    </footer>
+
+    <script>
+      import { ensureWallet, onWalletChange, rememberedWallets } from '../lib/wallet-ui'
+
+      const walletButton = document.getElementById('wallet-button') as HTMLButtonElement | null
+      const shorten = (address: string) => `${address.slice(0, 6)}…${address.slice(-4)}`
+      onWalletChange((active, all) => {
+        if (!walletButton) return
+        if (active) {
+          const more = all.length > 1 ? ` +${all.length - 1}` : ''
+          walletButton.textContent = `${shorten(active.address)}${more}`
+          walletButton.dataset.state = 'connected'
+          walletButton.title = `${active.name} · ${active.address}`
+          return
+        }
+        const remembered = rememberedWallets()
+        walletButton.textContent = remembered.length ? 'Reconnect wallet' : 'Connect wallet'
+        walletButton.dataset.state = remembered.length ? 'remembered' : 'disconnected'
+        walletButton.removeAttribute('title')
+      })
+      walletButton?.addEventListener('click', () => {
+        ensureWallet({ manage: true }).catch(() => undefined)
+      })
+
+      const menuToggle = document.querySelector<HTMLButtonElement>('.nav__toggle')
+      const menuPanel = document.getElementById('nav-panel')
+      const setMenu = (open: boolean) => {
+        if (!menuToggle || !menuPanel) return
+        menuPanel.dataset.open = String(open)
+        menuToggle.setAttribute('aria-expanded', String(open))
+        menuToggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu')
+        document.body.classList.toggle('is-locked', open)
+      }
+      menuToggle?.addEventListener('click', () => setMenu(menuPanel?.dataset.open !== 'true'))
+      menuPanel?.addEventListener('click', (event) => {
+        const target = event.target
+        if (target instanceof Element && target.closest('a')) setMenu(false)
+      })
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && menuPanel?.dataset.open === 'true') {
+          setMenu(false)
+          menuToggle?.focus()
+        }
+      })
+      window.matchMedia('(min-width: 1041px)').addEventListener('change', (event) => {
+        if (event.matches) setMenu(false)
+      })
+    </script>
+  </body>
+</html>

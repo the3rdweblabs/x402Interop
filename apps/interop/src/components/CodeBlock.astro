@@ -1,0 +1,20 @@
+---
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (c) 2026 THE3RDWEBLABS (https://github.com/the3rdweblabs)
+// [native]
+// Build-time highlighted code (Shiki, via astro:components) with a language label and a copy button.
+// The copy behaviour is wired in src/scripts/site.ts through [data-copy].
+import { Code } from 'astro:components';
+
+interface Props {
+  code: string;
+  lang?: string;
+  label?: string;
+}
+const { code, lang = 'ts', label } = Astro.props;
+---
+<div class="code">
+  <span class="code__lang">{label ?? lang}</span>
+  <Code code={code} lang={lang} theme="github-dark" />
+  <button class="code__copy" type="button" data-copy>Copy</button>
+</div>

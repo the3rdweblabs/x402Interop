@@ -1,0 +1,38 @@
+{
+  "name": "marketplace",
+  "version": "0.0.0",
+  "description": "x402Interop marketplace. An Astro app over the running x402Interop facilitator.",
+  "license": "AGPL-3.0-or-later",
+  "author": "THE3RDWEBLABS",
+  "type": "module",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/the3rdweblabs/x402Interop.git",
+    "directory": "apps/marketplace"
+  },
+  "scripts": {
+    "dev": "astro dev --port 4321 --host 127.0.0.1",
+    "build": "astro build",
+    "preview": "astro preview --port 4321 --host 127.0.0.1",
+    "start": "astro preview --port 4321 --host 127.0.0.1",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --max-warnings 0",
+    "lint:check": "eslint . --max-warnings 0",
+    "test": "vitest run --coverage",
+    "preview:proxy": "astro preview --port 4321 --host 0.0.0.0"
+  },
+  "dependencies": {
+    "@x402interop/core": "workspace:*",
+    "astro": "^7.4.4",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "@typescript/native": "catalog:",
+    "@typescript/typescript6": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

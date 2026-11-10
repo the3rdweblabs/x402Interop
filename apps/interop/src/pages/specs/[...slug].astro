@@ -1,0 +1,15 @@
+---
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (c) 2026 THE3RDWEBLABS (https://github.com/the3rdweblabs)
+// [native]
+import { docSlugs } from '../../lib/doc-paths'
+
+export async function getStaticPaths() {
+  const slugs = await docSlugs('specs')
+  return slugs.map((slug) => ({ params: { slug } }))
+}
+
+const slug = Astro.params.slug
+if (!slug) throw new Error('Missing spec slug')
+return Astro.redirect(`/docs/specs/${slug}`)
+---

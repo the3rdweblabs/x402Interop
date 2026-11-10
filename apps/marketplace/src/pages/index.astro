@@ -1,0 +1,104 @@
+---
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (c) 2026 THE3RDWEBLABS (https://github.com/the3rdweblabs)
+// [native]
+import Layout from '../layouts/Layout.astro'
+---
+
+<Layout title="Marketplace" description="Search services registered with the local facilitator." active="discover">
+  <section class="phero">
+    <div class="phero__inner">
+      <h1>Search the catalogue.</h1>
+      <p class="phero__lede">
+        Services registered with the facilitator on this machine. An empty result means nothing has
+        been registered yet.
+      </p>
+    </div>
+  </section>
+  <section>
+      <form id="search-form" class="search">
+        <input id="q" name="q" placeholder="Name or description" aria-label="Search" />
+        <input id="network" name="network" placeholder="Network (eip155:8453)" aria-label="Network" />
+        <input id="asset" name="asset" placeholder="Asset (usdc)" aria-label="Asset" />
+        <input id="maxPrice" name="maxPrice" inputmode="decimal" placeholder="Max price" aria-label="Max price" />
+        <button type="submit">Search</button>
+      </form>
+      <div id="search-status" class="muted">Loading the facilitator catalogue…</div>
+      <section id="results" class="cards" aria-live="polite"></section>
+      <button id="load-more" type="button" hidden>Load more</button>
+  </section>
+</Layout>
+
+<script>
+  import { searchResources, type Resource } from '../lib/marketplace'
+  import { shortenAddress } from '@x402interop/core'
+
+  const form = document.getElementById('search-form') as HTMLFormElement | null
+  const results = document.getElementById('results')
+  const status = document.getElementById('search-status')
+  const more = document.getElementById('load-more') as HTMLButtonElement | null
+  const PAGE_SIZE = 20
+  let loaded = 0
+  let query: Record<string, string> = {}
+
+  function render(resource: Resource): HTMLElement {
+    const card = document.createElement('article')
+    card.className = 'panel resource-card'
+    const title = document.createElement('h2')
+    title.textContent = resource.name
+    const description = document.createElement('p')
+    description.textContent = resource.description
+    const meta = document.createElement('p')
+    meta.className = 'muted'
+    // Health is only meaningful once a check has run; never render `unknown` as data.
+    const health = resource.health && resource.health !== 'unknown' ? resource.health : undefined
+    meta.textContent = [resource.price + ' ' + resource.asset, resource.networks.join(', '), health]
+      .filter(Boolean)
+      .join(' · ')
+    const owner = document.createElement('p')
+    owner.className = 'muted owner-line'
+    owner.append(`By ${shortenAddress(resource.owner, 10, 6)}`)
+    if (resource.verified) owner.append(' · verified listing')
+    owner.title = resource.owner
+    const link = document.createElement('a')
+    link.href = `/service?id=${encodeURIComponent(resource.id)}`
+    link.className = 'resource-link'
+    link.textContent = 'View service'
+    card.append(title, description, meta, owner, link)
+    return card
+  }
+
+  async function load(append: boolean): Promise<void> {
+    if (!results || !status) return
+    if (!append) {
+      const data = new FormData(form ?? undefined)
+      query = Object.fromEntries([...data.entries()].filter(([, value]) => value !== ''))
+      loaded = 0
+    }
+    try {
+      const page = await searchResources({ ...query, limit: PAGE_SIZE, offset: loaded })
+      if (!append) results.replaceChildren()
+      results.append(...page.resources.map(render))
+      loaded += page.resources.length
+      status.classList.remove('error')
+      status.textContent =
+        page.total === 0
+          ? '0 services found. Nothing is registered with this facilitator.'
+          : `Showing ${loaded} of ${page.total} service${page.total === 1 ? '' : 's'}`
+      if (more) more.hidden = loaded >= page.total
+    } catch (error) {
+      if (!append) results.replaceChildren()
+      status.textContent = error instanceof Error ? error.message : String(error)
+      status.classList.add('error')
+    }
+  }
+
+  form?.addEventListener('submit', (event) => {
+    event.preventDefault()
+    void load(false)
+  })
+  more?.addEventListener('click', () => {
+    void load(true)
+  })
+  void load(false)
+</script>

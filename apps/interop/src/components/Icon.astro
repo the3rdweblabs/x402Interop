@@ -1,0 +1,45 @@
+---
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (c) 2026 THE3RDWEBLABS (https://github.com/the3rdweblabs)
+// [native]
+// Lucide icons (@lucide/astro). Decorative by default. Brand logos are not in
+// Lucide, so the GitHub link is text, not an icon.
+import {
+  ArrowDownToLine,
+  ArrowRight,
+  BookOpen,
+  Bot,
+  ChevronDown,
+  Coins,
+  Layers,
+  Menu,
+  Search,
+  Send,
+  Shield,
+  X,
+  Zap,
+} from '@lucide/astro';
+
+interface Props {
+  name: keyof typeof icons;
+  size?: number;
+}
+const icons = {
+  arrow: ArrowRight,
+  chev: ChevronDown,
+  menu: Menu,
+  close: X,
+  search: Search,
+  send: Send,
+  receive: ArrowDownToLine,
+  zap: Zap,
+  shield: Shield,
+  coins: Coins,
+  layers: Layers,
+  bot: Bot,
+  book: BookOpen,
+} as const;
+const { name, size = 20 } = Astro.props;
+const Glyph = icons[name];
+---
+<Glyph size={size} aria-hidden="true" focusable="false" />

@@ -1,0 +1,53 @@
+---
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (c) 2026 THE3RDWEBLABS (https://github.com/the3rdweblabs)
+// [native]
+import Icon from './Icon.astro';
+
+interface Props {
+  active?: string;
+}
+const { active } = Astro.props;
+const marketplace = import.meta.env.PUBLIC_MARKETPLACE_URL ?? 'http://127.0.0.1:4321/';
+const links = [
+  { key: 'intro', text: 'Introduction', href: '/docs/intro' },
+  { key: 'concept', text: 'Concepts', href: '/docs/concept/overview' },
+  { key: 'guides', text: 'Guides', href: '/docs/guides/quickstart' },
+  { key: 'reference', text: 'Reference', href: '/docs/reference/api' },
+  { key: 'specs', text: 'Specs', href: '/docs/specs/scheme' },
+];
+---
+<header class="nav">
+  <div class="wrap nav__inner">
+    <a class="nav__brand" href="/" aria-label="x402Interop home">
+      <img class="nav__lockup" src="/brand/the3rdweblabs-lockup-compact-white.svg" alt="the3rdweblabs" width="227" height="36" />
+    </a>
+    <nav class="nav__links" aria-label="Primary">
+      {links.map((link) => (
+        <a class="nav__link" href={link.href} aria-current={link.key === active ? 'page' : undefined}>
+          {link.text}
+        </a>
+      ))}
+      <a class="btn btn--secondary nav__cta" href={marketplace}>Marketplace</a>
+    </nav>
+    <button class="nav__search" type="button" data-search-open aria-label="Search the docs">
+      <Icon name="search" size={15} />
+      <span>Search</span>
+      <kbd data-shortcut>K</kbd>
+    </button>
+    <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="nav-panel" aria-label="Open menu" data-menu-toggle>
+      <Icon name="menu" size={18} />
+    </button>
+  </div>
+  <div class="nav__panel" id="nav-panel" data-menu-panel>
+    <div class="wrap">
+      <ul>
+        {links.map((link) => (
+          <li><a href={link.href}>{link.text}</a></li>
+        ))}
+        <li><a href={marketplace}>Marketplace</a></li>
+        <li><button type="button" data-search-open>Search the docs</button></li>
+      </ul>
+    </div>
+  </div>
+</header>

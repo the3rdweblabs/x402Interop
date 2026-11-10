@@ -1,0 +1,187 @@
+---
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (c) 2026 THE3RDWEBLABS (https://github.com/the3rdweblabs)
+// [native]
+import Layout from '../layouts/Layout.astro'
+---
+
+<Layout title="Privacy" description="How the x402Interop marketplace handles personal data." active="">
+  <section class="phero">
+    <div class="phero__inner">
+      <h1>Privacy.</h1>
+      <p class="phero__lede">DRAFT for legal review.</p>
+    </div>
+  </section>
+  <section class="legal">
+    <dl class="legal__facts">
+      <div>
+        <dt>Last updated</dt>
+        <dd>10 November 2026</dd>
+      </div>
+      <div>
+        <dt>Operator</dt>
+        <dd>THE3RDWEBLABS</dd>
+      </div>
+      <div>
+        <dt>Covers</dt>
+        <dd>Information the x402Interop marketplace handles when you browse, quote, or list.</dd>
+      </div>
+      <div>
+        <dt>Questions and requests</dt>
+        <dd>
+          <a href="https://github.com/the3rdweblabs/x402Interop">GitHub</a>
+          {' · '}
+          <a href="https://t.me/the3rdweblabs">Telegram</a>
+        </dd>
+      </div>
+    </dl>
+
+    <h2>1. What this notice covers</h2>
+    <p>
+      This notice describes the marketplace operated by THE3RDWEBLABS. It covers the site you
+      are reading, the catalogue, deposit quotes, and the wallet signature used to change a
+      listing. It does not cover an endpoint a seller runs, a wallet extension, a chain, or
+      NEAR Intents. Those are separate services. The <a href="/terms">terms of use</a> describe
+      what the marketplace is for.
+    </p>
+    <p>
+      The marketplace does not ask you to create an account. It does not ask for your name, your
+      email address, or a password.
+    </p>
+
+    <h2>2. Information the marketplace handles</h2>
+    <ul>
+      <li>
+        <strong>Wallet details on your device.</strong> When you connect a wallet, the page
+        stores the public address, the wallet name, the family (EVM, Sui, or Solana), and the
+        networks that wallet reported. This stays in session storage in your browser under the
+        key <code>x402interop.wallets</code>. The private key and the seed phrase are never sent
+        to the marketplace and are not written into that storage.
+      </li>
+      <li>
+        <strong>Listing content.</strong> A listing can include a name, a description, a
+        resource URL, a documentation URL, a price, an asset, one or more networks, a payout
+        address, a category, and the public address of the wallet that owns it.
+      </li>
+      <li>
+        <strong>Signatures.</strong> A change to a listing is signed in your wallet. The
+        facilitator keeps a single-use challenge for that action. The challenge expires after
+        five minutes and can be used once. The stored result is the signature and the address
+        it recovered, not a private key.
+      </li>
+      <li>
+        <strong>Quote requests.</strong> Asking for a deposit quote sends the seller network,
+        seller asset, seller address, amount, your network, your asset, your refund address,
+        and the delivery mode. The facilitator returns a deposit address, an amount, and an
+        expiry.
+      </li>
+      <li>
+        <strong>Ordinary request data.</strong> The host that serves the site and the
+        facilitator may record the time, the path, the IP address, and the user agent of a
+        request, as part of running and protecting the service. The approved version of this
+        notice will state how long those records are kept.
+      </li>
+    </ul>
+
+    <h2>3. What the marketplace does not do</h2>
+    <p>
+      The site does not use advertising cookies, cross-site tracking, or a third-party analytics
+      product. It does not sell personal information. Connecting a wallet does not subscribe you
+      to a mailing list, because the marketplace never receives an email address.
+    </p>
+
+    <h2>4. Why it is used</h2>
+    <ul>
+      <li>To show the catalogue and open a listing.</li>
+      <li>To build a deposit quote and show its status.</li>
+      <li>To check that a listing is created, edited, or removed by the wallet that owns it.</li>
+      <li>To keep the service available and to investigate abuse.</li>
+      <li>To act on a valid takedown or legal request.</li>
+    </ul>
+    <p>
+      The approved version of this notice will name the legal ground for each of these uses.
+    </p>
+
+    <h2>5. Where it sits</h2>
+    <p>
+      Session storage stays on your device. It lasts until you disconnect the wallet, clear the
+      site's data, or close the browser session. It is not sent to the operator as a stored
+      profile.
+    </p>
+    <p>
+      Listing content and quote records are stored by the facilitator so the catalogue and the
+      payment status can be shown again. A challenge is discarded once it is used or once five
+      minutes have passed. A record written to a public blockchain is outside this storage. The
+      operator cannot edit or delete it.
+    </p>
+
+    <h2>6. Who else can see it</h2>
+    <p>
+      A published listing is visible to anyone who can open the catalogue, including the payout
+      address and the owner address. A quote is visible to the person who requested it and to
+      the facilitator that produced it.
+    </p>
+    <p>Beyond that, information leaves the marketplace only in these cases:</p>
+    <ul>
+      <li>
+        <strong>Your wallet.</strong> The signature prompt is shown by the wallet extension or
+        app you chose. That wallet provider has its own notice.
+      </li>
+      <li>
+        <strong>Settlement.</strong> A live quote is requested from NEAR Intents through 1Click.
+        The request includes the networks, assets, addresses, and amount needed to price the
+        swap.
+      </li>
+      <li>
+        <strong>Hosting.</strong> The site and the facilitator run on infrastructure the
+        operator chooses. That host processes the traffic required to serve the pages and the API.
+      </li>
+      <li>
+        <strong>Law and safety.</strong> The operator may disclose information when the law
+        requires it, or when it is needed to investigate abuse of the service.
+      </li>
+    </ul>
+
+    <h2>7. Public chains</h2>
+    <p>
+      A wallet address, a transaction, and a payout on a public chain can be read by anyone and
+      cannot be deleted by the operator. Removing a listing from the marketplace removes it from
+      the directory. It does not remove the address from the chain, and it does not hide a
+      payment that has already been sent.
+    </p>
+
+    <h2>8. Your requests</h2>
+    <p>
+      You can ask to see the listing data held for your address, to correct a listing you own,
+      or to remove a listing you own. You can also ask about quote records tied to an address
+      you control. Send the request through the GitHub repository or the Telegram contact above,
+      and include the public address the request is about so the record can be found.
+    </p>
+    <p>
+      Where the law gives you a right to access, correct, export, or delete personal information,
+      or to object to a use of it, you can use the same contact. The operator will answer within
+      the time that law requires. A request cannot extend to data that lives only on a public
+      chain, or to an endpoint the seller operates.
+    </p>
+
+    <h2>9. Children</h2>
+    <p>
+      The marketplace is not directed at anyone under 18. It does not ask for a date of birth.
+      A listing that targets or exploits a minor is removed under the terms of use.
+    </p>
+
+    <h2>10. Security</h2>
+    <p>
+      Listing changes are checked against a signature and a single-use challenge. Private keys
+      are not collected. No method of storage or transmission is perfect. You should protect the
+      device and the wallet you use to sign.
+    </p>
+
+    <h2>11. Changes</h2>
+    <p>
+      Changes to this notice are posted on this page. The date at the top changes with them.
+      A change that alters what is collected, or who it is shared with, will be described here
+      before it applies.
+    </p>
+  </section>
+</Layout>

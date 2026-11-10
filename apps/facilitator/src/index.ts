@@ -1,0 +1,11 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (c) 2026 THE3RDWEBLABS (https://github.com/the3rdweblabs)
+// [native]
+
+export {
+  allowedCorsOrigins,
+  createFacilitatorServer,
+  createFacilitatorServerWithPersistence,
+  dispatch,
+  routeFacilitator,
+} from './server.js'

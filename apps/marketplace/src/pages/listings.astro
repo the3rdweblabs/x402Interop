@@ -1,0 +1,117 @@
+---
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (c) 2026 THE3RDWEBLABS (https://github.com/the3rdweblabs)
+// [native]
+import Layout from '../layouts/Layout.astro'
+---
+
+<Layout title="My listings" description="Services owned by your connected wallet." active="listings">
+  <section class="phero">
+    <div class="phero__inner">
+      <h1>My listings.</h1>
+      <p class="phero__lede">Services owned by the wallet you connect. Changes are signed in your wallet.</p>
+    </div>
+  </section>
+  <section>
+    <p id="listings-status" class="muted">Connect a wallet to see your listings.</p>
+    <div id="listings" class="cards" aria-live="polite"></div>
+    <pre id="listings-result" hidden></pre>
+  </section>
+</Layout>
+
+<script>
+  import { checkResourceHealth, deleteResource, searchResources, type Resource } from '../lib/marketplace'
+  import { signAction, ownerIdOf } from '../lib/wallet'
+  import { connectedWallet, ensureWallet, onWalletChange } from '../lib/wallet-ui'
+
+  const status = document.getElementById('listings-status')
+  const list = document.getElementById('listings')
+  const output = document.getElementById('listings-result')
+
+  function report(message: string, failed = false): void {
+    if (!output) return
+    output.hidden = false
+    output.classList.toggle('error', failed)
+    output.textContent = message
+  }
+
+  function action(label: string, handler: () => Promise<void>): HTMLButtonElement {
+    const button = document.createElement('button')
+    button.type = 'button'
+    button.textContent = label
+    button.addEventListener('click', () => {
+      button.disabled = true
+      void handler()
+        .catch((error: unknown) => report(error instanceof Error ? error.message : String(error), true))
+        .finally(() => {
+          button.disabled = false
+        })
+    })
+    return button
+  }
+
+  function render(resource: Resource): HTMLElement {
+    const card = document.createElement('article')
+    card.className = 'panel resource-card'
+    const title = document.createElement('h2')
+    title.textContent = resource.name
+    const meta = document.createElement('p')
+    meta.className = 'muted'
+    // Health is only meaningful once a check has run; never render `unknown` as data.
+    const healthValue = resource.health && resource.health !== 'unknown' ? resource.health : undefined
+    meta.textContent = [resource.price + ' ' + resource.asset, resource.networks.join(', '), healthValue]
+      .filter(Boolean)
+      .join(' · ')
+    const edit = document.createElement('a')
+    edit.href = `/register?id=${encodeURIComponent(resource.id)}`
+    edit.textContent = 'Edit'
+    edit.className = 'btn'
+    const health = action('Health check', async () => {
+      const wallet = await ensureWallet()
+      const path = `/discovery/resources/${encodeURIComponent(resource.id)}/health`
+      const signature = await signAction(wallet, 'POST', path, undefined)
+      const response = await checkResourceHealth(resource.id, undefined, { signature })
+      report(`${resource.name}: ${response.resource.health}`)
+      await load()
+    })
+    const remove = action('Delete', async () => {
+      if (!window.confirm(`Delete "${resource.name}"? This cannot be undone.`)) return
+      const wallet = await ensureWallet()
+      const path = `/discovery/resources/${encodeURIComponent(resource.id)}`
+      const signature = await signAction(wallet, 'DELETE', path, undefined)
+      await deleteResource(resource.id, undefined, { signature })
+      report(`Deleted ${resource.name}.`)
+      await load()
+    })
+    const actions = document.createElement('div')
+    actions.className = 'actions'
+    actions.append(edit, health, remove)
+    card.append(title, meta, actions)
+    return card
+  }
+
+  async function load(): Promise<void> {
+    const wallet = connectedWallet()
+    if (!wallet) {
+      list?.replaceChildren()
+      if (status) status.textContent = 'Connect a wallet to see your listings.'
+      return
+    }
+    try {
+      const page = await searchResources({ owner: ownerIdOf(wallet), limit: 100 })
+      list?.replaceChildren(...page.resources.map(render))
+      if (status) {
+        status.textContent =
+          page.total === 0
+            ? 'You have no listings yet. Register a service to see it here.'
+            : `${page.total} listing${page.total === 1 ? '' : 's'}`
+      }
+    } catch (error) {
+      if (status) status.textContent = error instanceof Error ? error.message : String(error)
+    }
+  }
+
+  onWalletChange(() => {
+    void load()
+  })
+</script>

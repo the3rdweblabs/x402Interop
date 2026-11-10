@@ -1,0 +1,7 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Copyright (c) 2026 THE3RDWEBLABS (https://github.com/the3rdweblabs)
+# [native]
+User-agent: *
+Allow: /
+
+# Set the sitemap URL to the deployed domain once it is known.

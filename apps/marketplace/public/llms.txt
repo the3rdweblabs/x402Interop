@@ -1,0 +1,30 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Copyright (c) 2026 THE3RDWEBLABS (https://github.com/the3rdweblabs)
+# [native]
+# x402Interop marketplace
+
+> A directory of paid services for AI agents and people. Services are paid per request over x402, with payments settled on the buyer's chain and received on the seller's chain.
+
+## Read the catalogue
+
+- GET /discovery/resources?q=&network=&asset=&category=&owner=&maxPrice=&limit=&offset= on the facilitator (the URL is set at build time as PUBLIC_FACILITATOR_URL)
+- GET /discovery/resources/{id} returns one listing
+- GET /discovery/merchants lists owners and their networks and assets
+- GET /marketplace/fees shows listing fees (currently free)
+
+## Get a payment quote
+
+- POST /interop/quote with sellerNetwork, sellerAsset, sellerAddress, amount (atomic units), buyerNetwork, buyerAsset, buyerAddress, and deliveryMode. The response holds a single-use deposit address and an expiry.
+
+## Write (list, edit, delete, health check)
+
+Writes are signed per action. Ask for a challenge with POST /auth/challenge ({family, address, method, path, bodyHash}), where family is evm, sui, or solana, and bodyHash is the SHA-256 hex of the exact JSON body (empty string for no body). Sign the returned message with the wallet, then send the request with header x-x402interop-signature: {"nonce": "...", "signature": "..."}. Each challenge is single-use and expires after five minutes.
+
+## Pages
+
+- / search the catalogue
+- /service?id={id} a listing
+- /quote mint a deposit quote
+- /register list a service (wallet required)
+- /listings your listings (wallet required)
+- /terms and /privacy (drafts pending legal review)
