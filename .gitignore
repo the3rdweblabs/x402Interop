@@ -1,0 +1,15 @@
+node_modules
+dist
+coverage
+.turbo
+**/.astro
+apps/interop/src/content/docs/
+.pnpm-store
+*.tsbuildinfo
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store
+# Facilitator file store when a process is started from the repo root.
+**/.data/

@@ -1,0 +1,47 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"]
+    },
+    "interop#build": {
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/docs/**"],
+      "outputs": ["dist/**"]
+    },
+    "test": {
+      "dependsOn": ["build"],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "$TURBO_ROOT$/test-key.ts",
+        "$TURBO_ROOT$/test-env.ts",
+        "$TURBO_ROOT$/vitest.setup.ts",
+        "$TURBO_ROOT$/vitest.shared.ts",
+        "$TURBO_ROOT$/tests/.env"
+      ],
+      "env": ["X402INTEROP_TEST_PRIVATE_KEY"],
+      "outputs": ["coverage/**"]
+    },
+    "test:integration": {
+      "dependsOn": ["build"],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "$TURBO_ROOT$/test-key.ts",
+        "$TURBO_ROOT$/test-env.ts",
+        "$TURBO_ROOT$/vitest.setup.ts",
+        "$TURBO_ROOT$/vitest.shared.ts",
+        "$TURBO_ROOT$/tests/.env"
+      ],
+      "env": ["X402INTEROP_TEST_PRIVATE_KEY"],
+      "outputs": ["coverage/**"]
+    },
+    "lint": {},
+    "lint:check": {},
+    "format": {},
+    "format:check": {},
+    "typecheck": {
+      "dependsOn": ["^build"]
+    }
+  }
+}

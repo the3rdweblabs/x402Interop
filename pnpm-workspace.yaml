@@ -1,0 +1,66 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Copyright (c) 2026 THE3RDWEBLABS (https://github.com/the3rdweblabs)
+# [native]
+packages:
+  - apps/facilitator
+  - apps/marketplace
+  - apps/interop
+  - packages/core
+  - packages/adpt
+  - packages/intents
+  - packages/facilkit
+  - packages/client
+  - packages/servers
+  - examples/live-canary
+  - examples/resource
+  - examples/agent
+  - tests/e2e
+
+# Three days. Newly published versions stay out of the lockfile until then.
+minimumReleaseAge: 4320
+
+# Force the patched minimatch. ESLint tooling still resolves 10.x, which is
+# affected by the ReDoS/DoS advisories fixed in 11.0.1.
+overrides:
+  'minimatch@>=10.0.0 <11.0.1': 11.0.4
+  # Upstream elliptic has not shipped a fix for CVE-2025-14505 (<= 6.6.1).
+  # This fork is upstream 6.6.1 plus the RFC 6979 nonce-truncation fix.
+  # Remove the override once upstream publishes a patched release.
+  elliptic: 'npm:@mapped/elliptic@^6.6.10'
+
+# @x402/* 2.29.0 publishes (2026-10-28) are inside the window while the tree
+# adopts them; remove entries as they age out. @bankofai/x402-tron is NOT used.
+minimumReleaseAgeExclude:
+  - '@x402/core'
+  - '@x402/evm'
+  - '@x402/svm'
+  - '@x402/near'
+  - '@x402/tvm'
+  - '@x402/xrpl'
+  - '@x402/aptos'
+  - '@x402/stellar'
+  - '@x402/express'
+  - '@x402/hono'
+  - '@x402/fastify'
+  - '@x402/next'
+  - '@x402/fetch'
+  - '@x402/extensions'
+
+catalog:
+  '@types/node': ^26.6.6
+  '@typescript/native': npm:typescript@^7.0.2
+  '@typescript/typescript6': ^6.0.2
+  '@vitest/coverage-v8': ^5.0.5
+  tsup: ^9.0.0
+  # TypeScript 7.0 ships no compiler API. tsup and typescript-eslint import
+  # `typescript`, so that name stays on the 6.0 API. `@typescript/native` is
+  # the 7.0.2 `tsc` used for typecheck.
+  typescript: npm:@typescript/typescript6@^6.0.2
+  vitest: ^5.0.5
+  viem: ^2.37.5
+  zod: ^4.6.7
+
+allowBuilds:
+  esbuild: true
+  secp256k1: true
+  sharp: false

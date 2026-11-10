@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "types": ["node"],
+    "noEmit": true,
+    "rootDir": ".",
+    "allowImportingTsExtensions": true
+  },
+  "include": ["test-env.ts", "test-key.ts", "vitest.shared.ts", "vitest.setup.ts", "tsup.shared.ts"]
+}
