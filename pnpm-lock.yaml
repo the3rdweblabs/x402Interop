@@ -779,8 +779,8 @@ importers:
         specifier: ^2.29.0
         version: 2.29.0(@typescript/typescript6@6.0.2)(express@5.3.0(supports-color@7.2.0))
       '@x402/fastify':
-        specifier: ^2.29.0
-        version: 2.29.0(@typescript/typescript6@6.0.2)(fastify@5.12.7)
+        specifier: ^2.30.0
+        version: 2.30.0(@typescript/typescript6@6.0.2)(fastify@5.12.7)
       '@x402/hono':
         specifier: ^2.30.0
         version: 2.30.0(@typescript/typescript6@6.0.2)(hono@4.13.14)
@@ -2890,10 +2890,10 @@ packages:
   '@x402/extensions@2.30.0':
     resolution: {integrity: sha512-Lqu8hYkFAIhzarWa8V1272tyolFAW7WjHrxQ7we5P0fEZ8oMXOq1hna2X0FXQetZoOFzBDwSWBBMsrqE8ZzvcQ==}
 
-  '@x402/fastify@2.29.0':
-    resolution: {integrity: sha512-FkieovIY7VvO77Ou7b6K2OLZsAkMBl/8wtWnHwmt4YDtLDXhaYxSKbZEyiwgQRq7LNnR4g+Cp1JDIDjDkAG4Fg==}
+  '@x402/fastify@2.30.0':
+    resolution: {integrity: sha512-gY7HfD3uPp3hwbNpXL2UPHDadqlC+ciD4kmTBbp6JnJO6N0ohqVRj9V0LMiFMC9qPvIv06ejUvIsikdK380wDQ==}
     peerDependencies:
-      '@x402/paywall': ^2.29.0
+      '@x402/paywall': ^2.30.0
       fastify: '>=5.12.5 <6.0.0'
     peerDependenciesMeta:
       '@x402/paywall':
@@ -7577,10 +7577,10 @@ snapshots:
       - typescript
       - utf-8-validate
 
-  '@x402/fastify@2.29.0(@typescript/typescript6@6.0.2)(fastify@5.12.7)':
+  '@x402/fastify@2.30.0(@typescript/typescript6@6.0.2)(fastify@5.12.7)':
     dependencies:
-      '@x402/core': 2.29.0
-      '@x402/extensions': 2.29.0(@typescript/typescript6@6.0.2)
+      '@x402/core': 2.30.0
+      '@x402/extensions': 2.30.0(@typescript/typescript6@6.0.2)
       fastify: 5.12.7
     transitivePeerDependencies:
       - bufferutil
