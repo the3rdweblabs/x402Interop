@@ -107,6 +107,9 @@ export function createAgentSession(payer: SourcePayer, config: AgentConfig): Age
         for (const call of message.tool_calls) {
           let result: unknown
           try {
+            if (call.type !== 'function') {
+              throw new Error(`Unsupported tool call: ${call.type}`)
+            }
             const args = call.function.arguments
               ? (JSON.parse(call.function.arguments) as Record<string, unknown>)
               : {}
