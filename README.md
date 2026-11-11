@@ -11,7 +11,9 @@ copyright: "2026 THE3RDWEBLABS (https://github.com/the3rdweblabs)"
 
 - **[Read the documentation](docs/README.mdx)** for integration and architecture guides.
 - **[Run the mainnet canary](examples/live-canary/README.md)** for a tiny real quote/settlement check.
-- **[Enter the marketplace](http://localhost:4321/)** to discover or register x402-enabled services locally.
+- **[Enter the marketplace](https://x402interop-marketplace.up.railway.app/)** to discover or register x402interop-enabled services.
+- **[Run the protected resource](examples/resource/README.md)**. This is the seller. `MODE=test` quotes in-process and serves two reports, Sui USDC and NEAR USDC, with no mainnet spend. `MODE=live` uses 1Click and pays the seller addresses you set. Each report is 0.15 USDC.
+- **[Run the paying agent](examples/agent/README.md)**. This is the buyer, one Base wallet, talking only to that resource. `list` and `buy` need no model. `chat` is the interactive session. `MODE=live` with `CONFIRM_SPEND=true` sends real Base USDC.
 
 ```ts
 import { x402interop } from '@x402interop/servers/express'
