@@ -12,7 +12,12 @@
  * facilitator implementation that speaks the same two routes.
  */
 
-import type { PaymentPayload, PaymentRequirements, SettleResponse, VerifyResponse } from '@x402interop/core'
+import type {
+  PaymentPayload,
+  PaymentRequirements,
+  SettleResponse,
+  VerifyResponse,
+} from '@x402interop/core'
 
 export interface FacilitatorRequest {
   facilitator: string

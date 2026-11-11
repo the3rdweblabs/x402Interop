@@ -146,13 +146,16 @@ describe('per-action wallet sign-in', () => {
     async (family) => {
       const signer = await signer_(family)
       const facilitator = facilitatorWith()
-      const header = await signedHeader(facilitator, signer, 'POST', '/discovery/resources', listing)
-      const result = await facilitator.routeFacilitator(
+      const header = await signedHeader(
+        facilitator,
+        signer,
         'POST',
         '/discovery/resources',
         listing,
-        { 'x-x402interop-signature': header },
       )
+      const result = await facilitator.routeFacilitator('POST', '/discovery/resources', listing, {
+        'x-x402interop-signature': header,
+      })
       expect(result.status).toBe(201)
       expect((result.body as { resource: { owner: string } }).resource.owner).toBe(
         ownerOf(signer.family, signer.address, chainReferenceFor(signer.family)),
@@ -412,12 +415,20 @@ describe('wallet primitives', () => {
     expect(ownerOf('evm', '0xABCDEF0000000000000000000000000000000001', '8453')).toBe(
       'eip155:8453:0xabcdef0000000000000000000000000000000001',
     )
-    expect(ownerOf('sui', '0xABCDEF0000000000000000000000000000000000000000000000000000000001', 'mainnet')).toBe(
-      'sui:mainnet:0xabcdef0000000000000000000000000000000000000000000000000000000001',
-    )
-    expect(ownerOf('solana', 'So11111111111111111111111111111111111111112', '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp')).toBe(
-      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:So11111111111111111111111111111111111111112',
-    )
+    expect(
+      ownerOf(
+        'sui',
+        '0xABCDEF0000000000000000000000000000000000000000000000000000000001',
+        'mainnet',
+      ),
+    ).toBe('sui:mainnet:0xabcdef0000000000000000000000000000000000000000000000000000000001')
+    expect(
+      ownerOf(
+        'solana',
+        'So11111111111111111111111111111111111111112',
+        '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+      ),
+    ).toBe('solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:So11111111111111111111111111111111111111112')
   })
 
   it('round-trips base58 and rejects bad characters', () => {
@@ -429,12 +440,12 @@ describe('wallet primitives', () => {
   it('computes the NEP-413 digest over the tagged borsh payload', () => {
     const digest = nep413Digest('hi', new Uint8Array(32), 'r')
     expect(digest).toHaveLength(32)
-    expect(Buffer.from(digest).equals(Buffer.from(nep413Digest('hi', new Uint8Array(32), 'r')))).toBe(
-      true,
-    )
-    expect(Buffer.from(digest).equals(Buffer.from(nep413Digest('hi', new Uint8Array(32), 's')))).toBe(
-      false,
-    )
+    expect(
+      Buffer.from(digest).equals(Buffer.from(nep413Digest('hi', new Uint8Array(32), 'r'))),
+    ).toBe(true)
+    expect(
+      Buffer.from(digest).equals(Buffer.from(nep413Digest('hi', new Uint8Array(32), 's'))),
+    ).toBe(false)
   })
 
   it('drops expired challenges when new ones are issued', () => {
@@ -520,7 +531,9 @@ describe('URL guards', () => {
       owner: 'evm:0x1',
     }
     expect(() => parseServiceRecord({ ...base, resourceUrl: 'javascript:alert(1)' })).toThrow()
-    expect(() => parseServiceRecord({ ...base, resourceUrl: 'https://example.com/a' })).not.toThrow()
+    expect(() =>
+      parseServiceRecord({ ...base, resourceUrl: 'https://example.com/a' }),
+    ).not.toThrow()
   })
 })
 

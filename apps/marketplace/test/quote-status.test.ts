@@ -56,7 +56,10 @@ describe('fetchQuoteStatus', () => {
   })
 
   it('throws on a non-OK response', async () => {
-    vi.stubGlobal('fetch', vi.fn(async () => new Response('', { status: 404, statusText: 'Not Found' })))
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => new Response('', { status: 404, statusText: 'Not Found' })),
+    )
     await expect(fetchQuoteStatus('x', 'http://f.test')).rejects.toThrow('404 Not Found')
   })
 })

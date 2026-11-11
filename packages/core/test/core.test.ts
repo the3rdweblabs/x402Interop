@@ -24,8 +24,10 @@ import {
   NETWORK_CATALOGUE,
   networksForFamily,
   normalizeNetwork,
+  isTestnetNetwork,
   parsePaymentRequirements,
   parseX402InteropExtension,
+  parseX402InteropQuoteInfo,
   preferredAssetForNetwork,
   readX402InteropExtension,
   SCHEME_IDS,
@@ -128,6 +130,7 @@ describe('extensions.x402interop', () => {
   it('builds and reads the extension', () => {
     const extension = x402InteropExtension(quote)
     expect(parseX402InteropExtension(extension).info.quoteId).toBe('q-1')
+    expect(parseX402InteropQuoteInfo(quote).originAmount).toBe('51000')
     expect(readX402InteropExtension({ x402interop: extension })?.info.depositAddress).toBe(
       quote.depositAddress,
     )
@@ -188,6 +191,9 @@ describe('network catalogue', () => {
     }
     expect(ALL_NETWORKS).toContain('eip155:8453')
     expect(ALL_NETWORKS).toContain('solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp')
+    expect(isTestnetNetwork('sui:testnet')).toBe(true)
+    expect(isTestnetNetwork('solana:devnet')).toBe(true)
+    expect(isTestnetNetwork('eip155:8453')).toBe(false)
   })
 
   it('covers the day-one corridor set (26 chains)', () => {

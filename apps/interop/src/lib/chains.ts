@@ -30,7 +30,10 @@ export function dayOneChains(): string[] {
       inTable = true
       continue
     }
-    const name = first.replace(/\*\*/g, '').replace(/\s*\(default\)\s*/i, '').trim()
+    const name = first
+      .replace(/\*\*/g, '')
+      .replace(/\s*\(default\)\s*/i, '')
+      .trim()
     if (name && !names.includes(name)) names.push(name)
   }
   return names

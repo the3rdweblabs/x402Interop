@@ -169,8 +169,7 @@ function standardOptions(family: 'sui' | 'solana'): WalletOption[] {
         networks,
         async connect() {
           const connectFeature = wallet.features['standard:connect'] as
-            | { connect(): Promise<{ accounts: readonly StandardAccount[] }> }
-            | undefined
+            { connect(): Promise<{ accounts: readonly StandardAccount[] }> } | undefined
           if (!connectFeature) throw new Error(`${wallet.name} does not support connect`)
           const { accounts } = await connectFeature.connect()
           const account = accounts.find((item) =>
@@ -197,9 +196,10 @@ function standardOptions(family: 'sui' | 'solana'): WalletOption[] {
                 return signature
               }
               const feature = wallet.features[signFeature] as {
-                signMessage(input: { message: Uint8Array; account: StandardAccount }): Promise<
-                  readonly { signature: Uint8Array }[]
-                >
+                signMessage(input: {
+                  message: Uint8Array
+                  account: StandardAccount
+                }): Promise<readonly { signature: Uint8Array }[]>
               }
               const [output] = await feature.signMessage({ message: bytes, account })
               if (!output) throw new Error(`${wallet.name} returned no signature`)
@@ -253,7 +253,11 @@ export async function signAction(
 }
 
 /** CAIP-10 identity the facilitator assigns to a connected wallet, used to filter "my listings". */
-export function ownerIdOf(wallet: { family: WalletFamily; address: string; networks: string[] }): string {
+export function ownerIdOf(wallet: {
+  family: WalletFamily
+  address: string
+  networks: string[]
+}): string {
   const chainId = wallet.networks[0]
   const [namespace, reference] = chainId ? chainId.split(':') : []
   const fallbackNamespace = wallet.family === 'solana' ? 'solana' : wallet.family

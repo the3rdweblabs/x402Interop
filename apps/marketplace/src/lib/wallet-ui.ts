@@ -226,7 +226,10 @@ export function pickWallet(options: { manage?: boolean } = {}): Promise<Connecte
       for (const wallet of connections) {
         const row = document.createElement('div')
         row.className = `wallet-option${wallet.id === activeId ? ' wallet-option--active' : ''}`
-        row.append(iconFor(wallet.name, wallet.icon), textBlock(wallet.name, coverageOf(wallet.networks)))
+        row.append(
+          iconFor(wallet.name, wallet.icon),
+          textBlock(wallet.name, coverageOf(wallet.networks)),
+        )
         const actions = document.createElement('span')
         actions.className = 'wallet-option__actions'
         actions.append(

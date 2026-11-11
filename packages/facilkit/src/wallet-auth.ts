@@ -69,11 +69,7 @@ export function bodyHashOf(body: unknown): string {
  * The result is an identity, not a payout address. Settlement uses the listing's
  * separate `payTo` field.
  */
-export function ownerOf(
-  family: WalletFamily,
-  address: string,
-  chainReference: string,
-): string {
+export function ownerOf(family: WalletFamily, address: string, chainReference: string): string {
   const namespace = CAIP10_NAMESPACE[family]
   const normalised = family === 'evm' || family === 'sui' ? address.toLowerCase() : address
   return `${namespace}:${chainReference}:${normalised}`
@@ -97,7 +93,13 @@ export function chainReferenceFor(family: WalletFamily, network?: string): strin
     const reference = parts.length > 1 ? parts[1] : undefined
     if (reference) return reference
   }
-  return family === 'evm' ? '1' : family === 'sui' ? 'mainnet' : family === 'near' ? 'mainnet' : 'mainnet'
+  return family === 'evm'
+    ? '1'
+    : family === 'sui'
+      ? 'mainnet'
+      : family === 'near'
+        ? 'mainnet'
+        : 'mainnet'
 }
 
 /**

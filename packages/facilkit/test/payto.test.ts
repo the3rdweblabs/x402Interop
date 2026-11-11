@@ -58,7 +58,9 @@ describe('payTo is validated against the listing network', () => {
   })
 
   it('accepts a Solana payTo for a Solana listing', () => {
-    expect(payToNetworkError(['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'], SOLANA_PAY_TO)).toBeUndefined()
+    expect(
+      payToNetworkError(['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'], SOLANA_PAY_TO),
+    ).toBeUndefined()
   })
 
   it('requires a payTo to be valid on every listed network', () => {

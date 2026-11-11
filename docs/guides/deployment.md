@@ -125,12 +125,12 @@ There is no NEAR Intents testnet; every live send is a real mainnet transfer.
 
 Four sites, one set of routes in production and locally:
 
-| Site | Production | Local (through Caddy) |
-|---|---|---|
-| Main project site | `x402interop.xyz` | `x402interop.localhost:8443` |
-| Marketplace | `marketplace.x402interop.xyz` | `marketplace.x402interop.localhost:8443` |
-| Docs | `docs.x402interop.xyz` (served from `/docs`) | `docs.x402interop.localhost:8443` |
-| Facilitator API | `facilitator.x402interop.xyz` | `facilitator.x402interop.localhost:8443` |
+| Site              | Production                                   | Local (through Caddy)                    |
+| ----------------- | -------------------------------------------- | ---------------------------------------- |
+| Main project site | `x402interop.xyz`                            | `x402interop.localhost:8443`             |
+| Marketplace       | `marketplace.x402interop.xyz`                | `marketplace.x402interop.localhost:8443` |
+| Docs              | `docs.x402interop.xyz` (served from `/docs`) | `docs.x402interop.localhost:8443`        |
+| Facilitator API   | `facilitator.x402interop.xyz`                | `facilitator.x402interop.localhost:8443` |
 
 `*.localhost` names resolve to your own machine in current browsers, so local HTTPS needs no DNS or hosts-file change. Each app keeps its own `.env.example`. Copy it to `.env` and use the local values.
 
@@ -172,13 +172,13 @@ The first four answers are `200`. The last is `301` to `https://docs.x402interop
 
 **Railway, using Railway's own hostnames.** `deploy/Caddyfile.railway` is the same four sites. Railway's edge already terminates TLS and sets `PORT`, so this file does not request a certificate and does not mention `x402interop.xyz`. Run Caddy as one service. Keep the interop app, the marketplace, and the facilitator as private services in the same project, and set:
 
-| Variable | Value |
-|---|---|
-| `SITE_HOST` | `x402interop.up.railway.app` |
-| `DOCS_HOST` | `x402interop-docs.up.railway.app` |
-| `MARKETPLACE_HOST` | `x402interop-marketplace.up.railway.app` |
-| `FACILITATOR_HOST` | `x402interop-facilitator.up.railway.app` |
-| `INTEROP_UPSTREAM` | `x402interop.railway.internal:$PORT` |
+| Variable               | Value                                            |
+| ---------------------- | ------------------------------------------------ |
+| `SITE_HOST`            | `x402interop.up.railway.app`                     |
+| `DOCS_HOST`            | `x402interop-docs.up.railway.app`                |
+| `MARKETPLACE_HOST`     | `x402interop-marketplace.up.railway.app`         |
+| `FACILITATOR_HOST`     | `x402interop-facilitator.up.railway.app`         |
+| `INTEROP_UPSTREAM`     | `x402interop.railway.internal:$PORT`             |
 | `MARKETPLACE_UPSTREAM` | `x402interop-marketplace.railway.internal:$PORT` |
 | `FACILITATOR_UPSTREAM` | `x402interop-facilitator.railway.internal:$PORT` |
 

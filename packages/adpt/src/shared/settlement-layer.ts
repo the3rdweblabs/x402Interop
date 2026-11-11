@@ -39,14 +39,7 @@ import {
 import { notImplemented, unsettled } from './interop-binding.js'
 
 export type SettlementLayerFamily =
-  | 'aptos'
-  | 'stellar'
-  | 'starknet'
-  | 'utxo'
-  | 'ton'
-  | 'tron'
-  | 'xrpl'
-  | 'lightning'
+  'aptos' | 'stellar' | 'starknet' | 'utxo' | 'ton' | 'tron' | 'xrpl' | 'lightning'
 
 export interface SettlementLayerInterop {
   verifyInterop(
@@ -77,13 +70,7 @@ export function settlementLayerInterop(family: SettlementLayerFamily): Settlemen
     requirements: PaymentRequirements,
     options: InteropVerificationOptions = {},
   ): Promise<VerifyResponse> {
-    const verdict = await verifyInteropFamily(
-      'other',
-      scheme,
-      payload,
-      requirements,
-      options,
-    )
+    const verdict = await verifyInteropFamily('other', scheme, payload, requirements, options)
     // A malformed binding is a real answer; only a well-formed payment that
     // needs the settlement layer gets the not_implemented explanation.
     if (verdict.invalidReason && verdict.invalidReason !== 'not_implemented') return verdict

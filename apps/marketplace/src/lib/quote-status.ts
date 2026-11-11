@@ -5,12 +5,7 @@
 import { facilitatorUrl } from './facilitator.js'
 
 export type QuoteState =
-  | 'pending_deposit'
-  | 'deposit_seen'
-  | 'processing'
-  | 'success'
-  | 'refunded'
-  | 'failed'
+  'pending_deposit' | 'deposit_seen' | 'processing' | 'success' | 'refunded' | 'failed'
 
 export const TERMINAL_QUOTE_STATES: readonly QuoteState[] = ['success', 'refunded', 'failed']
 

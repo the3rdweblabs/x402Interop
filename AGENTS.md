@@ -1,5 +1,3 @@
-
-
 # AGENTS.md
 
 Notes for coding agents working in this repository. Read this before editing.
@@ -114,7 +112,7 @@ pnpm build
 pnpm test
 ```
 
-Commits use `component(sub): lowercase imperative summary` with no type prefix, no trailing period, and no emoji. The body says why, then `-`  bullets.
+Commits use `component(sub): lowercase imperative summary` with no type prefix, no trailing period, and no emoji. The body says why, then `-` bullets.
 
 ## Commit example
 

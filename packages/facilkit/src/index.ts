@@ -16,11 +16,7 @@ import {
 } from '@x402interop/core'
 import { z } from 'zod'
 import type { ExactAdapter } from '@x402interop/adpt'
-import {
-  settleWithAdapter,
-  verifyWithAdapter,
-  type InteropAdapterContext,
-} from './verifier.js'
+import { settleWithAdapter, verifyWithAdapter, type InteropAdapterContext } from './verifier.js'
 
 export { settleWithAdapter, verifyWithAdapter } from './verifier.js'
 

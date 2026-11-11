@@ -48,23 +48,50 @@ export interface InteropAdapterContext {
 type InteropCall = (
   payload: PaymentPayload,
   requirements: PaymentRequirements,
-  options: { store?: InteropQuoteStore; client?: SvmInteropClient | SuiInteropClient | NearInteropClient },
+  options: {
+    store?: InteropQuoteStore
+    client?: SvmInteropClient | SuiInteropClient | NearInteropClient
+  },
 ) => Promise<any>
 
 // Each family types its own client. The cast is safe because `optionsFor`
 // attaches only the client named by that entry.
-const interop: Record<string, { verify: InteropCall; settle: InteropCall; client?: 'svm' | 'sui' | 'near' }> = {
+const interop: Record<
+  string,
+  { verify: InteropCall; settle: InteropCall; client?: 'svm' | 'sui' | 'near' }
+> = {
   'x402interop-evm': { verify: verifyEvm as InteropCall, settle: settleEvm as InteropCall },
-  'x402interop-svm': { verify: verifySvm as InteropCall, settle: settleSvm as InteropCall, client: 'svm' },
-  'x402interop-sui': { verify: verifySui as InteropCall, settle: settleSui as InteropCall, client: 'sui' },
-  'x402interop-near': { verify: verifyNear as InteropCall, settle: settleNear as InteropCall, client: 'near' },
+  'x402interop-svm': {
+    verify: verifySvm as InteropCall,
+    settle: settleSvm as InteropCall,
+    client: 'svm',
+  },
+  'x402interop-sui': {
+    verify: verifySui as InteropCall,
+    settle: settleSui as InteropCall,
+    client: 'sui',
+  },
+  'x402interop-near': {
+    verify: verifyNear as InteropCall,
+    settle: settleNear as InteropCall,
+    client: 'near',
+  },
   'x402interop-tvm': { verify: verifyTon as InteropCall, settle: settleTon as InteropCall },
   'x402interop-tron': { verify: verifyTron as InteropCall, settle: settleTron as InteropCall },
   'x402interop-xrpl': { verify: verifyXrpl as InteropCall, settle: settleXrpl as InteropCall },
-  'x402interop-lightning': { verify: verifyLightning as InteropCall, settle: settleLightning as InteropCall },
+  'x402interop-lightning': {
+    verify: verifyLightning as InteropCall,
+    settle: settleLightning as InteropCall,
+  },
   'x402interop-aptos': { verify: verifyAptos as InteropCall, settle: settleAptos as InteropCall },
-  'x402interop-stellar': { verify: verifyStellar as InteropCall, settle: settleStellar as InteropCall },
-  'x402interop-starknet': { verify: verifyStarknet as InteropCall, settle: settleStarknet as InteropCall },
+  'x402interop-stellar': {
+    verify: verifyStellar as InteropCall,
+    settle: settleStellar as InteropCall,
+  },
+  'x402interop-starknet': {
+    verify: verifyStarknet as InteropCall,
+    settle: settleStarknet as InteropCall,
+  },
   'x402interop-utxo': { verify: verifyUtxo as InteropCall, settle: settleUtxo as InteropCall },
 }
 

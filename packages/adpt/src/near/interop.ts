@@ -55,57 +55,59 @@ export async function verifyInterop(
 ): Promise<VerifyResponse> {
   return verifyInteropFamily('near', SCHEME_IDS.near, payload, requirements, {
     ...(options.store ? { store: options.store } : {}),
-    proof: options.proof ?? (async () => {
-      const proof = originProofOf(payload)
-      const txHash = proof.txHash
-      if (typeof txHash !== 'string' || !isBase58Hash(txHash)) {
-        return {
-          isValid: false,
-          invalidReason: 'invalid_payload',
-          invalidMessage: 'A NEAR interop payment needs a base58 origin transaction hash',
+    proof:
+      options.proof ??
+      (async () => {
+        const proof = originProofOf(payload)
+        const txHash = proof.txHash
+        if (typeof txHash !== 'string' || !isBase58Hash(txHash)) {
+          return {
+            isValid: false,
+            invalidReason: 'invalid_payload',
+            invalidMessage: 'A NEAR interop payment needs a base58 origin transaction hash',
+          }
         }
-      }
-      const sender = proof.from
-      if (typeof sender !== 'string' || !isNearAccountId(sender)) {
-        return {
-          isValid: false,
-          invalidReason: 'invalid_binding',
-          invalidMessage: 'A NEAR interop payment needs the paying account (from)',
+        const sender = proof.from
+        if (typeof sender !== 'string' || !isNearAccountId(sender)) {
+          return {
+            isValid: false,
+            invalidReason: 'invalid_binding',
+            invalidMessage: 'A NEAR interop payment needs the paying account (from)',
+          }
         }
-      }
-      if (!options.client) {
-        return {
-          isValid: false,
-          invalidReason: 'not_implemented',
-          invalidMessage: 'no NEAR RPC client configured; cannot verify the origin transaction',
+        if (!options.client) {
+          return {
+            isValid: false,
+            invalidReason: 'not_implemented',
+            invalidMessage: 'no NEAR RPC client configured; cannot verify the origin transaction',
+          }
         }
-      }
-      let outcome: Awaited<ReturnType<NearInteropClient['getTransactionOutcome']>>
-      try {
-        outcome = await options.client.getTransactionOutcome(txHash, sender)
-      } catch {
-        return {
-          isValid: false,
-          invalidReason: 'unexpected_verify_error',
-          invalidMessage: 'The NEAR RPC node could not read the transaction',
+        let outcome: Awaited<ReturnType<NearInteropClient['getTransactionOutcome']>>
+        try {
+          outcome = await options.client.getTransactionOutcome(txHash, sender)
+        } catch {
+          return {
+            isValid: false,
+            invalidReason: 'unexpected_verify_error',
+            invalidMessage: 'The NEAR RPC node could not read the transaction',
+          }
         }
-      }
-      if (!outcome) {
-        return {
-          isValid: false,
-          invalidReason: 'payment_not_found',
-          invalidMessage: 'The NEAR RPC node has not seen this transaction',
+        if (!outcome) {
+          return {
+            isValid: false,
+            invalidReason: 'payment_not_found',
+            invalidMessage: 'The NEAR RPC node has not seen this transaction',
+          }
         }
-      }
-      if (!outcome.success) {
-        return {
-          isValid: false,
-          invalidReason: 'payment_failed',
-          invalidMessage: outcome.failureMessage ?? 'The origin transaction failed on chain',
+        if (!outcome.success) {
+          return {
+            isValid: false,
+            invalidReason: 'payment_failed',
+            invalidMessage: outcome.failureMessage ?? 'The origin transaction failed on chain',
+          }
         }
-      }
-      return undefined
-    }),
+        return undefined
+      }),
   })
 }
 

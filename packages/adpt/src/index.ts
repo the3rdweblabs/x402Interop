@@ -65,10 +65,7 @@ export {
 export { createExactAdaptersFromEnv } from './exact/env.js'
 export { createSuiRpcClient } from './sui/rpc.js'
 export type { SuiExactClient } from './sui/exact.js'
-export type {
-  InteropQuote,
-  InteropQuoteStore,
-} from './shared/store.js'
+export type { InteropQuote, InteropQuoteStore } from './shared/store.js'
 export { createFileStore, isQuoteValid } from './shared/store.js'
 export type {
   InteropVerificationOptions,

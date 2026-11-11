@@ -42,7 +42,9 @@ const solanaWallet = {
   features: {
     'standard:connect': { connect: async () => ({ accounts: [solanaAccount] }) },
     'solana:signMessage': {
-      signMessage: async () => [{ signedMessage: new Uint8Array(), signature: Uint8Array.from([1, 2]) }],
+      signMessage: async () => [
+        { signedMessage: new Uint8Array(), signature: Uint8Array.from([1, 2]) },
+      ],
     },
   },
 }
@@ -123,11 +125,12 @@ describe('extension discovery', () => {
   })
 
   it('signs one action against the server challenge', async () => {
-    const fetchMock = vi.fn(async (_url: string, _init: RequestInit) =>
-      new Response(JSON.stringify({ nonce: 'n1', message: 'sign this' }), {
-        status: 200,
-        headers: { 'content-type': 'application/json' },
-      }),
+    const fetchMock = vi.fn(
+      async (_url: string, _init: RequestInit) =>
+        new Response(JSON.stringify({ nonce: 'n1', message: 'sign this' }), {
+          status: 200,
+          headers: { 'content-type': 'application/json' },
+        }),
     )
     vi.stubGlobal('fetch', fetchMock)
     const option = (await listWallets()).find((item) => item.family === 'evm') as WalletOption

@@ -49,10 +49,7 @@ export interface SuiInteropOptions extends InteropVerificationOptions {
  * Returns `undefined` when the client cannot report balance changes, which
  * the caller treats as "unchecked" rather than "zero".
  */
-function depositedTo(
-  result: unknown,
-  depositAddress: string,
-): bigint | undefined {
+function depositedTo(result: unknown, depositAddress: string): bigint | undefined {
   if (typeof result !== 'object' || result === null) return undefined
   const deltas = (result as { balanceChanges?: unknown }).balanceChanges
   if (!Array.isArray(deltas)) return undefined
@@ -67,10 +64,7 @@ function depositedTo(
         : typeof owner === 'object' && owner !== null
           ? (owner as { address?: unknown }).address
           : undefined
-    if (
-      typeof address !== 'string' ||
-      address.toLowerCase() !== depositAddress.toLowerCase()
-    ) {
+    if (typeof address !== 'string' || address.toLowerCase() !== depositAddress.toLowerCase()) {
       continue
     }
     const amount = (delta as { amount?: unknown }).amount
@@ -93,62 +87,65 @@ export async function verifyInterop(
 ): Promise<VerifyResponse> {
   return verifyInteropFamily('sui', SCHEME_IDS.sui, payload, requirements, {
     ...(options.store ? { store: options.store } : {}),
-    proof: options.proof ?? (async ({ quote }) => {
-      const proof = originProofOf(payload)
-      const transaction = proof.transaction
-      const signature = proof.signature
-      if (typeof transaction !== 'string' || typeof signature !== 'string') {
-        return {
-          isValid: false,
-          invalidReason: 'invalid_payload',
-          invalidMessage: 'A Sui interop payment needs both a transaction and a signature',
+    proof:
+      options.proof ??
+      (async ({ quote }) => {
+        const proof = originProofOf(payload)
+        const transaction = proof.transaction
+        const signature = proof.signature
+        if (typeof transaction !== 'string' || typeof signature !== 'string') {
+          return {
+            isValid: false,
+            invalidReason: 'invalid_payload',
+            invalidMessage: 'A Sui interop payment needs both a transaction and a signature',
+          }
         }
-      }
-      if (!options.client) {
-        return {
-          isValid: false,
-          invalidReason: 'not_implemented',
-          invalidMessage:
-            'no Sui RPC client configured; cannot verify the signed interop transaction',
+        if (!options.client) {
+          return {
+            isValid: false,
+            invalidReason: 'not_implemented',
+            invalidMessage:
+              'no Sui RPC client configured; cannot verify the signed interop transaction',
+          }
         }
-      }
-      let simulated: unknown
-      try {
-        simulated = await (options.client.simulateTransaction(transaction, signature) as Promise<
-          unknown
-        >)
-      } catch {
-        return {
-          isValid: false,
-          invalidReason: 'unexpected_verify_error',
-          invalidMessage: 'The Sui node could not simulate the transaction',
+        let simulated: unknown
+        try {
+          simulated = await (options.client.simulateTransaction(
+            transaction,
+            signature,
+          ) as Promise<unknown>)
+        } catch {
+          return {
+            isValid: false,
+            invalidReason: 'unexpected_verify_error',
+            invalidMessage: 'The Sui node could not simulate the transaction',
+          }
         }
-      }
-      // When the node reports balance changes, the deposit must be met in
-      // full. A simulation that succeeds but moves nothing is not payment.
-      const depositAddress = quote?.depositAddress
-      if (typeof depositAddress === 'string') {
-        const moved = depositedTo(simulated, depositAddress)
-        if (moved === undefined) return undefined
-        const minimum = quote?.minAmountIn
-        if (typeof minimum === 'string' && /^\d+$/.test(minimum)) {
-          if (moved < BigInt(minimum)) {
+        // When the node reports balance changes, the deposit must be met in
+        // full. A simulation that succeeds but moves nothing is not payment.
+        const depositAddress = quote?.depositAddress
+        if (typeof depositAddress === 'string') {
+          const moved = depositedTo(simulated, depositAddress)
+          if (moved === undefined) return undefined
+          const minimum = quote?.minAmountIn
+          if (typeof minimum === 'string' && /^\d+$/.test(minimum)) {
+            if (moved < BigInt(minimum)) {
+              return {
+                isValid: false,
+                invalidReason: 'amount_mismatch',
+                invalidMessage: 'The signed transaction does not fund the quoted deposit',
+              }
+            }
+          } else if (moved <= 0n) {
             return {
               isValid: false,
               invalidReason: 'amount_mismatch',
-              invalidMessage: 'The signed transaction does not fund the quoted deposit',
+              invalidMessage: 'The signed transaction moves no funds to the deposit address',
             }
           }
-        } else if (moved <= 0n) {
-          return {
-            isValid: false,
-            invalidReason: 'amount_mismatch',
-            invalidMessage: 'The signed transaction moves no funds to the deposit address',
-          }
         }
-      }
-      return undefined
-    }),
+        return undefined
+      }),
   })
 }
 
