@@ -1,0 +1,48 @@
+{
+  "name": "live-canary",
+  "version": "0.0.0",
+  "description": "Mainnet micro-settlement canary for any x402Interop corridor.",
+  "license": "GPL-3.0-or-later",
+  "author": "THE3RDWEBLABS",
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/the3rdweblabs/x402Interop.git",
+    "directory": "examples/live-canary"
+  },
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --max-warnings 0",
+    "lint:check": "eslint . --max-warnings 0",
+    "test": "vitest run --coverage",
+    "canary": "node --env-file-if-exists=.env dist/cli.js"
+  },
+  "dependencies": {
+    "@x402interop/client": "workspace:*",
+    "@x402interop/core": "workspace:*",
+    "@x402interop/intents": "workspace:*",
+    "@x402interop/servers": "workspace:*",
+    "viem": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "@typescript/native": "catalog:",
+    "@typescript/typescript6": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "tsup": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  },
+  "private": true
+}
