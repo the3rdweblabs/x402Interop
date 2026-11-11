@@ -8,6 +8,7 @@
  * The generated directory is ignored by Git; `docs/` is the only source.
  */
 
+import { existsSync } from 'node:fs'
 import { cp, readFile, readdir, rm, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -59,11 +60,34 @@ for (const file of await walk(target)) {
   const original = await readFile(file, 'utf8')
   let next = original
   for (const [from, to] of replacements) next = next.replaceAll(from, to)
+  if (file.endsWith('.md') || file.endsWith('.mdx')) next = rewriteRelativeDocLinks(next, file)
   // MDX has no HTML comments: `<!-- -->` is a parse error. The provenance
   // header in `docs/*.mdx` is an HTML comment, so rewrite it to the MDX
   // equivalent after copying. Markdown keeps the HTML form, which is valid.
   if (file.endsWith('.mdx')) next = htmlCommentsToMdx(next)
   if (next !== original) await writeFile(file, next)
+}
+
+// A source link such as `oneclick-route-matrix.md` opens in the editor.
+// The site serves that page at `/docs/reference/oneclick-route-matrix`.
+function rewriteRelativeDocLinks(markdown, file) {
+  const sourceDir = path.join(source, path.relative(target, path.dirname(file)))
+  return markdown.replace(/\]\((?!https?:|\/|#|mailto:)([^)\s]+)\)/g, (match, href) => {
+    const hashIndex = href.indexOf('#')
+    const pathPart = hashIndex === -1 ? href : href.slice(0, hashIndex)
+    const hash = hashIndex === -1 ? '' : href.slice(hashIndex)
+    if (!pathPart.endsWith('.md') && !pathPart.endsWith('.mdx')) return match
+    const absolute = path.resolve(sourceDir, pathPart)
+    if (!existsSync(absolute)) return match
+    const insideDocs = path.relative(source, absolute).split(path.sep).join('/')
+    if (!insideDocs.startsWith('..')) {
+      const slug = insideDocs.replace(/\.(md|mdx)$/, '')
+      return `](/docs/${slug}${hash})`
+    }
+    const insideRepo = path.relative(repoRoot, absolute).split(path.sep).join('/')
+    if (insideRepo.startsWith('..')) return match
+    return `](https://github.com/the3rdweblabs/x402Interop/blob/main/${insideRepo}${hash})`
+  })
 }
 
 // Rewrites top-level HTML comment blocks to the MDX equivalent.
