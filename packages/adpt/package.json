@@ -94,7 +94,7 @@
     "@x402/xrpl": "^2.29.0",
     "@x402interop/core": "workspace:*",
     "@solana/kit": "^8.5.0",
-    "@mysten/sui": "^2.38.0"
+    "@mysten/sui": "^2.39.1"
   },
   "devDependencies": {
     "@types/node": "catalog:",
