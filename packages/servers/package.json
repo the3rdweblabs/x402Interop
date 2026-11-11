@@ -54,7 +54,7 @@
   },
   "peerDependencies": {
     "@x402/express": "^2.29.0",
-    "@x402/fastify": "^2.29.0",
+    "@x402/fastify": "^2.30.0",
     "@x402/hono": "^2.30.0",
     "@x402/next": "^2.29.0",
     "express": ">=4.18",
@@ -94,7 +94,7 @@
     "@typescript/typescript6": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "@x402/express": "^2.29.0",
-    "@x402/fastify": "^2.29.0",
+    "@x402/fastify": "^2.30.0",
     "@x402/hono": "^2.30.0",
     "@x402/next": "^2.29.0",
     "tsup": "catalog:",
