@@ -541,8 +541,8 @@ importers:
         specifier: ^2.29.0
         version: 2.29.0(@near-js/keystores@2.5.1(@near-js/crypto@2.5.1(@near-js/types@2.5.1)(@near-js/utils@2.5.1(@near-js/types@2.5.1)))(@near-js/types@2.5.1))(@near-js/types@2.5.1)
       '@x402/stellar':
-        specifier: ^2.29.0
-        version: 2.29.0(debug@4.4.3(supports-color@7.2.0))(supports-color@7.2.0)
+        specifier: ^2.30.0
+        version: 2.30.0(debug@4.4.3(supports-color@7.2.0))(supports-color@7.2.0)
       '@x402/svm':
         specifier: ^2.29.0
         version: 2.29.0(@solana/kit@8.5.0(@typescript/typescript6@6.0.2))(@solana/sysvars@8.5.0(@typescript/typescript6@6.0.2))(@typescript/typescript6@6.0.2)
@@ -587,8 +587,8 @@ importers:
         specifier: ^2.29.0
         version: 2.29.0(@near-js/keystores@2.5.1(@near-js/crypto@2.5.1(@near-js/types@2.5.1)(@near-js/utils@2.5.1(@near-js/types@2.5.1)))(@near-js/types@2.5.1))(@near-js/types@2.5.1)
       '@x402/stellar':
-        specifier: ^2.29.0
-        version: 2.29.0(debug@4.4.3(supports-color@7.2.0))(supports-color@7.2.0)
+        specifier: ^2.30.0
+        version: 2.30.0(debug@4.4.3(supports-color@7.2.0))(supports-color@7.2.0)
       '@x402/svm':
         specifier: ^2.29.0
         version: 2.29.0(@solana/kit@8.5.0(@typescript/typescript6@6.0.2))(@solana/sysvars@8.5.0(@typescript/typescript6@6.0.2))(@typescript/typescript6@6.0.2)
@@ -2920,8 +2920,8 @@ packages:
       '@x402/paywall':
         optional: true
 
-  '@x402/stellar@2.29.0':
-    resolution: {integrity: sha512-ZQPp/m/eXgO2IsVX65VLQ++RWVXZ9nEkyZ4BT4wF5HAfG1uEmSVmAEjggZAGubv7Iu+D7oFo/AI0wj2CKCtVCg==}
+  '@x402/stellar@2.30.0':
+    resolution: {integrity: sha512-XpLbvLesgK8c1EuFRBsJ3fVtBd5csBkjXJ5jQYrFgp+jH0r27bWqoMzSzo5uBdvXv0iQddk+ju6ahqG+F99L3g==}
     engines: {node: '>=22.0.0'}
 
   '@x402/svm@2.29.0':
@@ -7625,10 +7625,10 @@ snapshots:
       - typescript
       - utf-8-validate
 
-  '@x402/stellar@2.29.0(debug@4.4.3(supports-color@7.2.0))(supports-color@7.2.0)':
+  '@x402/stellar@2.30.0(debug@4.4.3(supports-color@7.2.0))(supports-color@7.2.0)':
     dependencies:
       '@stellar/stellar-sdk': 16.4.1(debug@4.4.3(supports-color@7.2.0))(supports-color@7.2.0)
-      '@x402/core': 2.29.0
+      '@x402/core': 2.30.0
     transitivePeerDependencies:
       - debug
       - supports-color
