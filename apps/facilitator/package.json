@@ -30,7 +30,7 @@
     "start": "node --env-file-if-exists=.env dist/esm/cli.js"
   },
   "dependencies": {
-    "@x402/core": "^2.29.0",
+    "@x402/core": "^2.31.0",
     "@x402interop/core": "workspace:*",
     "@x402interop/facilkit": "workspace:*",
     "@x402interop/intents": "workspace:*",

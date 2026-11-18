@@ -30,7 +30,7 @@
   },
   "dependencies": {
     "@mysten/sui": "^2.39.1",
-    "@x402/core": "^2.29.0",
+    "@x402/core": "^2.31.0",
     "@x402interop/adpt": "workspace:*",
     "@x402interop/core": "workspace:*",
     "@x402interop/intents": "workspace:*",
