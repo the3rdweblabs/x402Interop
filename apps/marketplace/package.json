@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "@x402interop/core": "workspace:*",
-    "astro": "^7.4.4",
+    "astro": "^7.4.12",
     "zod": "catalog:"
   },
   "devDependencies": {
