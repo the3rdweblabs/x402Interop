@@ -283,8 +283,8 @@ importers:
   apps/facilitator:
     dependencies:
       '@x402/core':
-        specifier: ^2.29.0
-        version: 2.29.0
+        specifier: ^2.31.0
+        version: 2.31.0
       '@x402interop/adpt':
         specifier: workspace:*
         version: link:../../packages/adpt
@@ -532,8 +532,8 @@ importers:
         specifier: ^2.29.0
         version: 2.29.0(got@11.8.6)
       '@x402/core':
-        specifier: ^2.29.0
-        version: 2.29.0
+        specifier: ^2.31.0
+        version: 2.31.0
       '@x402/evm':
         specifier: ^2.29.0
         version: 2.29.0(@typescript/typescript6@6.0.2)
@@ -581,8 +581,8 @@ importers:
         specifier: ^8.5.0
         version: 8.5.0(@typescript/typescript6@6.0.2)
       '@x402/core':
-        specifier: ^2.29.0
-        version: 2.29.0
+        specifier: ^2.31.0
+        version: 2.31.0
       '@x402/near':
         specifier: ^2.29.0
         version: 2.29.0(@near-js/keystores@2.5.1(@near-js/crypto@2.5.1(@near-js/types@2.5.1)(@near-js/utils@2.5.1(@near-js/types@2.5.1)))(@near-js/types@2.5.1))(@near-js/types@2.5.1)
@@ -627,8 +627,8 @@ importers:
   packages/core:
     dependencies:
       '@x402/core':
-        specifier: ^2.29.0
-        version: 2.29.0
+        specifier: ^2.31.0
+        version: 2.31.0
       zod:
         specifier: 'catalog:'
         version: 4.6.7
@@ -661,8 +661,8 @@ importers:
         specifier: ^2.39.1
         version: 2.39.1(@typescript/typescript6@6.0.2)
       '@x402/core':
-        specifier: ^2.29.0
-        version: 2.29.0
+        specifier: ^2.31.0
+        version: 2.31.0
       '@x402interop/adpt':
         specifier: workspace:*
         version: link:../adpt
@@ -2865,6 +2865,9 @@ packages:
 
   '@x402/core@2.30.0':
     resolution: {integrity: sha512-gvMxCum2QlNI6jI/3NL1jdrmOgtX9sWEWxSIOmeI67/5ndOJvYOtP7JZLSO8o8af+O+A+Vhhjza1NCda0yVppg==}
+
+  '@x402/core@2.31.0':
+    resolution: {integrity: sha512-7ToCOwHfftfFEERW5Mp6Fc5U1+JrtCLTkbQnEVsBl13IutltP9lWIBYi/J+zy8vQWaLUmACq8A2qywzdt/RRIQ==}
 
   '@x402/evm@2.29.0':
     resolution: {integrity: sha512-Gk4bJ6WoRR3jeT2+vERSPMSkSr1nRL5kjtVh14uoynRm8y+fGFH8xmvlGzuwKT0liA6OLjdr9xjZtN8i0WYk9g==}
@@ -7485,6 +7488,10 @@ snapshots:
       zod: 4.6.7
 
   '@x402/core@2.30.0':
+    dependencies:
+      zod: 4.6.7
+
+  '@x402/core@2.31.0':
     dependencies:
       zod: 4.6.7
 
